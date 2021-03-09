@@ -6,13 +6,13 @@ using System.Collections.Generic;
 OperatorPrecedenceParser precedence = new();
 
 
-Production production = new();
-production.Left = new("A");
+Production production = new("A");
 production.Right = new()
 {
-    new TerminalSymbol("id"),
+    new TerminalSymbol("id^"),
     new NonTerminalSymbol("B"),
-    new TerminalSymbol("id")
+    new TerminalSymbol("+"),
+    TerminalSymbol.EPSILON
 };
 
 WriteLine(production.ToString());

@@ -16,7 +16,7 @@ namespace Parsers.Grammer
     public class TerminalSymbol : Symbol
     {
         public TerminalSymbol(string symbolName) : base(symbolName) { }
-        public static TerminalSymbol EPSILON => new("Epsilon");
+        public static TerminalSymbol EPSILON => new("ε");
     }
     public class NonTerminalSymbol : Symbol
     {

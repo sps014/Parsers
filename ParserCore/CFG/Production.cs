@@ -10,14 +10,17 @@ namespace Parsers.Grammer
     /// </summary>
     public class Production
     {
-        public ProductionType Type { get; set; }
-        public NonTerminalSymbol Left { get; set; }
+        public ProductionType Type { get; init; } = ProductionType.Intermidiate;
+        public string Left { get; init; }
         public List<Symbol> Right { get; set; }
-
+        public Production(string leftSymbolname)
+        {
+            Left = leftSymbolname;
+        }
         public override string ToString()
         {
             var symbols = Right.Select(x => x.SymbolName);
-            return $"{Left.SymbolName}->{string.Join("", symbols)}";
+            return $"{Left}->{string.Join("", symbols)}";
         }
     }
 
