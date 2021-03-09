@@ -2,7 +2,7 @@
 
 namespace Parsers.ShiftReduce
 {
-    public class OperatorPrecedence
+    public class OperatorPrecedenceParser
     {
     }
 }

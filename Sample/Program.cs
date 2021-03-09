@@ -1,6 +1,6 @@
 ﻿using static System.Console;
 using Parsers.ShiftReduce;
 
-OperatorPrecedence precedence = new();
+OperatorPrecedenceParser precedence = new();
 
 WriteLine("Hello World!");
