@@ -18,9 +18,9 @@ production.Right = new()
 
 table.Add(production);
 
-Production p2 = new("A");
+Production production2 = new("A");
 
-p2.Right = new()
+production2.Right = new()
 {
     new TerminalSymbol("m"),
     new NonTerminalSymbol("X"),
@@ -28,13 +28,13 @@ p2.Right = new()
     new TerminalSymbol("c")
 };
 
-table.Add(p2);
+table.Add(production2);
 
-foreach (var v in table)
+foreach (var values in table)
 {
-    foreach (var g in v)
+    foreach (var prod in values)
     {
-        WriteLine(g.ToString());
+        WriteLine(prod.ToString());
     }
 }
 
