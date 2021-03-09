@@ -5,12 +5,15 @@ using System.Linq;
 namespace Parsers.Grammer
 {
     /// <summary>
-    ///  A->idI+s
-    ///  B->id*7A
+    ///  Indicates a production in BNF eg. A->id*A .
+    /// alternate production should be created as separate instance aka A-> eps | aAa |bBA
+    ///should be A-> epsilon   , A-> aAa , A-> bBA
     /// </summary>
     public class Production
     {
+        ///Indicate Type of production ie. is it start or any other
         public  ProductionType Type { get; set; } = ProductionType.Intermidiate;
+        
         public string Left { get; init; }
         public List<Symbol> Right { get; set; }
         public Production(string leftSymbolname)
