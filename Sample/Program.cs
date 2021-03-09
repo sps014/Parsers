@@ -1,6 +1,18 @@
 ﻿using static System.Console;
 using Parsers.ShiftReduce;
+using Parsers.Grammer;
+using System.Collections.Generic;
 
 OperatorPrecedenceParser precedence = new();
 
-WriteLine("Hello World!");
+
+Production production = new();
+production.Left = new("A");
+production.Right = new()
+{
+    new TerminalSymbol("id"),
+    new NonTerminalSymbol("B"),
+    new TerminalSymbol("id")
+};
+
+WriteLine(production.ToString());
