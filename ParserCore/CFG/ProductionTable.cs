@@ -1,10 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
 namespace Parsers.Grammer
 {
-    public class ProductionTable
+    public class ProductionTable : IEnumerable<List<Production>>
     {
         private readonly Dictionary<string, List<Production>> productions = new();
 
@@ -31,7 +31,22 @@ namespace Parsers.Grammer
                 Add(v);
             }
         }
-        public List<Production> this[string nonTerminalSymbol]
+        public bool Contains([NotNull] string nonTerminalSymbol)
+        {
+            return productions.ContainsKey(nonTerminalSymbol);
+        }
+
+        public IEnumerator<List<Production>> GetEnumerator()
+        {
+            return productions.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return productions.Values.GetEnumerator();
+        }
+
+        public List<Production> this[[NotNull] string nonTerminalSymbol]
         {
             get
             {

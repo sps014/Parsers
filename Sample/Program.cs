@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 OperatorPrecedenceParser precedence = new();
 
+ProductionTable table = new();
 
 Production production = new("A");
 production.Right = new()
@@ -15,14 +16,25 @@ production.Right = new()
     TerminalSymbol.EPSILON
 };
 
-WriteLine(production.ToString());
+table.Add(production);
 
-production = new("A");
-production.Right = new()
+Production p2 = new("A");
+
+p2.Right = new()
 {
     new TerminalSymbol("m"),
     new NonTerminalSymbol("X"),
     new TerminalSymbol("+"),
     new TerminalSymbol("c")
 };
-WriteLine(production.ToString());
+
+table.Add(p2);
+
+foreach (var v in table)
+{
+    foreach (var g in v)
+    {
+        WriteLine(g.ToString());
+    }
+}
+
