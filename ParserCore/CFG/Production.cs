@@ -10,7 +10,7 @@ namespace Parsers.Grammer
     /// </summary>
     public class Production
     {
-        public ProductionType Type { get; init; } = ProductionType.Intermidiate;
+        public  ProductionType Type { get; set; } = ProductionType.Intermidiate;
         public string Left { get; init; }
         public List<Symbol> Right { get; set; }
         public Production(string leftSymbolname)

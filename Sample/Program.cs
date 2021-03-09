@@ -16,3 +16,13 @@ production.Right = new()
 };
 
 WriteLine(production.ToString());
+
+production = new("A");
+production.Right = new()
+{
+    new TerminalSymbol("m"),
+    new NonTerminalSymbol("X"),
+    new TerminalSymbol("+"),
+    new TerminalSymbol("c")
+};
+WriteLine(production.ToString());
