@@ -31,9 +31,11 @@ ProductionTable table = new();
 // table.Add(production2);
 
 
-var input = @"A->i
-A->B+C*A
-C->A
+var input = @"A->B+C*i
+C->M
+M->Ki
+K->L
+L->j
 B->i";
 
 foreach (var v in input.Split("\n"))
@@ -46,6 +48,7 @@ foreach (var v in input.Split("\n"))
             continue;
 
         production1.Right ??= new List<Symbol>();
+
         if (char.IsUpper(s))
         {
             production1.Right.Add(new Symbol(s.ToString(), SymbolType.NonTerminal));
@@ -66,3 +69,21 @@ foreach (var values in table)
     }
 }
 //A-> return Statement;
+string res = "";
+DFS(table["A"][0], ref res);
+WriteLine(res);
+
+void DFS(Production p, ref string current)
+{
+    foreach (var v in p.Right)
+    {
+        if (v.Type == SymbolType.Terminal)
+        {
+            current += v.SymbolName;
+        }
+        else
+        {
+            DFS(table[v.SymbolName][0], ref current);
+        }
+    }
+}

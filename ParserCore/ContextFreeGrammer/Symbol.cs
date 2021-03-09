@@ -14,9 +14,9 @@ namespace Parsers.Grammer
     }
     public enum SymbolType
     {
+        Default,
         Terminal,
         NonTerminal,
         Start,
-        Default
     }
 }
