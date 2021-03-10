@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Parsers.Grammer
+namespace Parsers.Grammar
 {
     public class ProductionTable : IEnumerable<List<Production>>
     {

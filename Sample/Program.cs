@@ -1,6 +1,6 @@
 ﻿using static System.Console;
 using Parsers.ShiftReduce;
-using Parsers.Grammer;
+using Parsers.Grammar;
 using System.Collections.Generic;
 
 

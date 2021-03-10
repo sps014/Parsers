@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Parsers.Grammer
+namespace Parsers.Grammar
 {
     /// <summary>
     ///  Indicates a production in BNF eg. A->id*A .

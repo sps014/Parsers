@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Parsers.Grammer
+namespace Parsers.Grammar
 {
     public class Symbol
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
-using Parsers.Grammer;
+using Parsers.Grammar;
 
 namespace Parsers.ShiftReduce
 {
@@ -95,6 +95,7 @@ namespace Parsers.ShiftReduce
             var stack = "$";
             int matchIndex = 0;
             var terminals = table.Terminals.ToList();
+
 
             Console.WriteLine("\n");
             Console.WriteLine("stack".PadRight(30) + "input".PadRight(30) + "\t");
