@@ -107,6 +107,9 @@ namespace Parsers.ShiftReduce
                 {
                     matchIndex--;
                 }
+                
+                Console.Write(stack.PadRight(30) + input.PadRight(30) + "\t");
+
 
                 if (input[0] == '$' && stack[matchIndex] == '$')
                 {
@@ -114,7 +117,6 @@ namespace Parsers.ShiftReduce
                     break;
                 }
 
-                Console.Write(stack.PadRight(30) + input.PadRight(30) + "\t");
 
                 int indI = terminals.IndexOf(input[0].ToString());
                 int indS = terminals.IndexOf(stack[matchIndex].ToString());
