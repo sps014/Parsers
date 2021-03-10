@@ -88,3 +88,4 @@ void DFS(Production p, ref string current)
 
 OperatorPrecedenceParser precedence = new(table);
 precedence.FillPrecedenceTable();
+precedence.PrintTable();
