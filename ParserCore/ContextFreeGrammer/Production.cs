@@ -12,14 +12,16 @@ namespace Parsers.Grammer
     public class Production
     {
         ///Indicate Type of production ie. is it start or any other
-        public  ProductionType Type { get; set; } = ProductionType.Intermidiate;
-        
+        public ProductionType Type { get; set; } = ProductionType.Intermidiate;
+
         public string Left { get; init; }
         public List<Symbol> Right { get; set; }
         public Production(string leftSymbolname)
         {
             Left = leftSymbolname;
         }
+        public string RightAsString => string.Join("", Right.Select(x => x.SymbolName));
+
         public override string ToString()
         {
             var symbols = Right.Select(x => x.SymbolName);

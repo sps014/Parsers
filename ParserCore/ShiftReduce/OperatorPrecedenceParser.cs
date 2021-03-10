@@ -89,6 +89,65 @@ namespace Parsers.ShiftReduce
                 Console.WriteLine();
             }
         }
+        public void StackConstruction(string input)
+        {
+            input += "$";
+            var stack = "$";
+            int matchIndex = 0;
+            var terminals = table.Terminals.ToList();
+            while (input.Length > 0 && stack.Length > 0)
+            {
+                matchIndex = stack.Length - 1;
+
+                while (char.IsUpper(stack[matchIndex]))
+                {
+                    matchIndex--;
+                }
+
+                if (input[0] == '$' && stack[matchIndex] == '$')
+                {
+                    Console.WriteLine("Accepted");
+                    break;
+                }
+
+                int indI = terminals.IndexOf(input[0].ToString());
+                int indS = terminals.IndexOf(stack[matchIndex].ToString());
+
+                if (OperatorTable[indI, indS] == CellValue.Undefined)
+                {
+                    Console.WriteLine("error");
+                    break;
+                }
+                else if (OperatorTable[indI, indS] == CellValue.Larger)
+                {
+                    Console.WriteLine($"Shifted {input[0]} to stack.");
+                    stack += input[0];
+                    input = input[1..];
+                }
+                else
+                {
+                    bool reduced = false;
+                    for (int i = 1; i < stack.Length; i++)
+                    {
+                        var str = string.Join("", stack[i..].Reverse());
+                        if (table.ContainsProduction(str))
+                        {
+                            var p = table.InverseProduction(str);
+                            p = string.Join("", p.Reverse());
+                            stack = stack.Replace(stack[i..], p);
+                            Console.WriteLine($"reduced: {str} to {p}");
+                            reduced = true;
+                            break;
+                        }
+                    }
+                    if (!reduced)
+                    {
+                        Console.WriteLine("Error in reducing not valid grammer");
+                        break;
+                    }
+                }
+            }
+        }
         public enum CellValue
         {
             Undefined,
@@ -96,5 +155,6 @@ namespace Parsers.ShiftReduce
             Smaller,
             Accepted
         }
+
     }
 }

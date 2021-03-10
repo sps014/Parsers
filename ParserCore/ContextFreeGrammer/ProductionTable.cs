@@ -7,6 +7,7 @@ namespace Parsers.Grammer
     public class ProductionTable : IEnumerable<List<Production>>
     {
         private readonly Dictionary<string, List<Production>> productions = new();
+        private readonly Dictionary<string, string> inverseProductions = new();
 
         public ProductionTable(List<Production> prods = null)
         {
@@ -16,12 +17,14 @@ namespace Parsers.Grammer
             AddRange(prods);
 
         }
+
         public void Add([NotNull] Production p)
         {
+            inverseProductions.Add(p.RightAsString, p.Left);
+
             if (!productions.ContainsKey(p.Left))
-            {
                 productions.Add(p.Left, new List<Production>());
-            }
+                
             foreach (var pd in p.Right)
             {
                 if (pd.Type == SymbolType.Terminal)
@@ -31,27 +34,23 @@ namespace Parsers.Grammer
             }
             productions[p.Left].Add(p);
         }
-        public void AddRange([NotNull] List<Production> prods)
-        {
-            foreach (var v in prods)
-            {
-                Add(v);
-            }
-        }
-        public bool Contains([NotNull] string nonTerminalSymbol)
-        {
-            return productions.ContainsKey(nonTerminalSymbol);
-        }
+        public void AddRange([NotNull] List<Production> prods) =>
+            prods.ForEach(v => Add(v));
+        public bool Contains([NotNull] string nonTerminalSymbol) =>
+            productions.ContainsKey(nonTerminalSymbol);
 
-        public IEnumerator<List<Production>> GetEnumerator()
-        {
-            return productions.Values.GetEnumerator();
-        }
+        public bool ContainsProduction([NotNull] string production) =>
+            inverseProductions.ContainsKey(production);
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return productions.Values.GetEnumerator();
-        }
+        public string InverseProduction([NotNull] string production) =>
+            ContainsProduction(production) ? inverseProductions[production] : null;
+
+        public IEnumerator<List<Production>> GetEnumerator() =>
+            productions.Values.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() =>
+            productions.Values.GetEnumerator();
+
         public HashSet<string> Terminals { get; private set; } = new() { "$" };
         public HashSet<string> NonTerminals { get; private set; } = new();
 

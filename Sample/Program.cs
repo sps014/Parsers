@@ -31,10 +31,9 @@ ProductionTable table = new();
 // table.Add(production2);
 
 
-var input = @"A->B+C*D
-C->i
-D->j
-B->k";
+var input = @"T->T+T
+T->T*T
+T->i";
 
 foreach (var v in input.Split("\n"))
 {
@@ -67,25 +66,8 @@ foreach (var values in table)
     }
 }
 //A-> return Statement;
-string res = "";
-DFS(table["A"][0], ref res);
-WriteLine("\r\n\r\n" + res);
-
-void DFS(Production p, ref string current)
-{
-    foreach (var v in p.Right)
-    {
-        if (v.Type == SymbolType.Terminal)
-        {
-            current += v.SymbolName;
-        }
-        else
-        {
-            DFS(table[v.SymbolName][0], ref current);
-        }
-    }
-}
 
 OperatorPrecedenceParser precedence = new(table);
 precedence.FillPrecedenceTable();
 precedence.PrintTable();
+precedence.StackConstruction("i+i*i");
