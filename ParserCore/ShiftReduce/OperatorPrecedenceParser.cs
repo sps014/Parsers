@@ -95,6 +95,10 @@ namespace Parsers.ShiftReduce
             var stack = "$";
             int matchIndex = 0;
             var terminals = table.Terminals.ToList();
+
+            Console.WriteLine("\n");
+            Console.WriteLine("stack".PadRight(30) + "input".PadRight(30) + "\t");
+
             while (input.Length > 0 && stack.Length > 0)
             {
                 matchIndex = stack.Length - 1;
@@ -109,6 +113,8 @@ namespace Parsers.ShiftReduce
                     Console.WriteLine("Accepted");
                     break;
                 }
+
+                Console.Write(stack.PadRight(30) + input.PadRight(30) + "\t");
 
                 int indI = terminals.IndexOf(input[0].ToString());
                 int indS = terminals.IndexOf(stack[matchIndex].ToString());
