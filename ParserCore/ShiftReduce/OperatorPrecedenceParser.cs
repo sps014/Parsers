@@ -107,7 +107,7 @@ namespace Parsers.ShiftReduce
                 {
                     matchIndex--;
                 }
-                
+
                 Console.Write(stack.PadRight(30) + input.PadRight(30) + "\t");
 
 
@@ -142,7 +142,7 @@ namespace Parsers.ShiftReduce
                         {
                             var p = table.InverseProduction(str);
                             p = string.Join("", p.Reverse());
-                            stack = stack.Replace(stack[i..], p);
+                            stack = ReplaceLastOccurrence(stack, stack[i..], p);
                             Console.WriteLine($"reduced: {str} to {p}");
                             reduced = true;
                             break;
@@ -155,6 +155,16 @@ namespace Parsers.ShiftReduce
                     }
                 }
             }
+        }
+        public static string ReplaceLastOccurrence(string Source, string Find, string Replace)
+        {
+            int place = Source.LastIndexOf(Find);
+
+            if (place == -1)
+                return Source;
+
+            string result = Source.Remove(place, Find.Length).Insert(place, Replace);
+            return result;
         }
         public enum CellValue
         {
