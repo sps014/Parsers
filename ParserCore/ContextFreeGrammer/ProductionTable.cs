@@ -22,6 +22,13 @@ namespace Parsers.Grammer
             {
                 productions.Add(p.Left, new List<Production>());
             }
+            foreach (var pd in p.Right)
+            {
+                if (pd.Type == SymbolType.Terminal)
+                    Terminals.Add(pd.SymbolName);
+                else if (pd.Type == SymbolType.NonTerminal)
+                    NonTerminals.Add(pd.SymbolName);
+            }
             productions[p.Left].Add(p);
         }
         public void AddRange([NotNull] List<Production> prods)
@@ -45,6 +52,9 @@ namespace Parsers.Grammer
         {
             return productions.Values.GetEnumerator();
         }
+        public HashSet<string> Terminals { get; private set; } = new() { "$" };
+        public HashSet<string> NonTerminals { get; private set; } = new();
+
 
         public List<Production> this[[NotNull] string nonTerminalSymbol]
         {

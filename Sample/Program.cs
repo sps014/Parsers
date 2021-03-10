@@ -3,9 +3,9 @@ using Parsers.ShiftReduce;
 using Parsers.Grammer;
 using System.Collections.Generic;
 
-OperatorPrecedenceParser precedence = new();
 
 ProductionTable table = new();
+
 
 // Production production = new("A");
 
@@ -31,12 +31,10 @@ ProductionTable table = new();
 // table.Add(production2);
 
 
-var input = @"A->B+C*i
-C->M
-M->Ki
-K->L
-L->j
-B->i";
+var input = @"A->B+C*D
+C->i
+D->j
+B->k";
 
 foreach (var v in input.Split("\n"))
 {
@@ -71,7 +69,7 @@ foreach (var values in table)
 //A-> return Statement;
 string res = "";
 DFS(table["A"][0], ref res);
-WriteLine(res);
+WriteLine("\r\n\r\n" + res);
 
 void DFS(Production p, ref string current)
 {
@@ -87,3 +85,6 @@ void DFS(Production p, ref string current)
         }
     }
 }
+
+OperatorPrecedenceParser precedence = new(table);
+precedence.FillPrecedenceTable();
