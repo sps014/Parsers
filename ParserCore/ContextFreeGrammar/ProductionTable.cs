@@ -61,7 +61,13 @@ namespace Parsers.Grammar
         IEnumerator IEnumerable.GetEnumerator() =>
             productions.Values.GetEnumerator();
 
+        /// <summary>
+        /// Get set of all terminals in all productions.
+        /// </summary>
         public HashSet<string> Terminals { get; private set; } = new() { "$" };
+        /// <summary>
+        /// Get set of all non terminals in all productions.
+        /// </summary>
         public HashSet<string> NonTerminals { get; private set; } = new();
 
 
