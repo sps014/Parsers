@@ -31,9 +31,9 @@ ProductionTable table = new();
 // table.Add(production2);
 
 
-var input = @"S->ABC
-A->DEF
-B->ε
+var input = @"S->aSbS
+S->bSaS
+S->ε
 C->ε
 D->ε
 E->ε
@@ -72,6 +72,6 @@ foreach (var values in table)
 table.StartSymbol = new("S", SymbolType.Start);
 
 LL1 lL1 = new(table);
-var vv = lL1.Follow(new("A", SymbolType.NonTerminal));
+var vv = lL1.Follow(new("S", SymbolType.NonTerminal));
 
 WriteLine(Symbols.EPSILON);

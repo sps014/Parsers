@@ -106,9 +106,10 @@ namespace Parsers.Grammar
             {
                 if (index == production.Right.Count - 1)
                 {
-                    Follow(new Symbol(production.Left, SymbolType.NonTerminal))
-                   .ToList()
-                   .ForEach(x => res.Add(x));
+                    if (production.Left != s.Value)
+                        Follow(new Symbol(production.Left, SymbolType.NonTerminal))
+                       .ToList()
+                       .ForEach(x => res.Add(x));
                 }
                 else
                 {
