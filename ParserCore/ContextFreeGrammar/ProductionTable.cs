@@ -9,6 +9,8 @@ namespace Parsers.Grammar
         private readonly Dictionary<string, List<Production>> productions = new();
         private readonly Dictionary<string, string> inverseProductions = new();
 
+        public Symbol StartSymbol { get; set; }
+
         public ProductionTable(List<Production> prods = null)
         {
             if (prods == null)
@@ -24,13 +26,16 @@ namespace Parsers.Grammar
 
             if (!productions.ContainsKey(p.Left))
                 productions.Add(p.Left, new List<Production>());
-                
+
             foreach (var pd in p.Right)
             {
                 if (pd.Type == SymbolType.Terminal)
                     Terminals.Add(pd.SymbolName);
                 else if (pd.Type == SymbolType.NonTerminal)
                     NonTerminals.Add(pd.SymbolName);
+                    
+                if (pd.Type == SymbolType.Start)
+                    StartSymbol = pd;
             }
             productions[p.Left].Add(p);
         }
@@ -42,7 +47,12 @@ namespace Parsers.Grammar
         public bool ContainsProduction([NotNull] string production) =>
             inverseProductions.ContainsKey(production);
 
-        public string InverseProduction([NotNull] string production) =>
+        /// <summary>
+        /// Find LHS symbol from Production 
+        /// </summary>
+        /// <param name="production">Production as string</param>
+        /// <returns>return LHS symbol string</returns>
+        public string InverseLookup([NotNull] string production) =>
             ContainsProduction(production) ? inverseProductions[production] : null;
 
         public IEnumerator<List<Production>> GetEnumerator() =>

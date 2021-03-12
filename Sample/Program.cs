@@ -1,8 +1,7 @@
 ﻿using static System.Console;
-using Parsers.ShiftReduce;
 using Parsers.Grammar;
 using System.Collections.Generic;
-
+using Parsers.TopDown;
 
 ProductionTable table = new();
 
@@ -31,14 +30,16 @@ ProductionTable table = new();
 // table.Add(production2);
 
 
-var input = @"T->T+T
-T->T*T
-T->i";
+var input = @"T->E+T
+T->F
+E->F*F
+F->i";
 
 foreach (var v in input.Split("\n"))
 {
     var parts = v.Split("->");
     Production production1 = new(parts[0]);
+
     foreach (var s in parts[1])
     {
         if (s == '\r')
@@ -65,9 +66,20 @@ foreach (var values in table)
         WriteLine(prod.ToString());
     }
 }
+
+table.StartSymbol = new("T");
 //A-> return Statement;
 
-OperatorPrecedenceParser precedence = new(table);
-precedence.FillPrecedenceTable();
-precedence.PrintTable();
-precedence.StackConstruction("i+i*i");
+
+
+RecursiveDescentParser parser = new(table);
+parser.Parse(new() { new("i"), new("*"), new("i"), new("+"), new("i") });
+/*
+                    T
+             /     |     \
+             E     +      T
+           / | \          |
+          F  *  F         F
+          |     |         |
+          i    id         id
+*/

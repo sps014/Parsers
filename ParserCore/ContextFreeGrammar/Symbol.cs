@@ -11,6 +11,10 @@ namespace Parsers.Grammar
             SymbolName = symbolName;
             Type = symbolType;
         }
+        public override string ToString()
+        {
+            return SymbolName;
+        }
     }
     public enum SymbolType
     {
