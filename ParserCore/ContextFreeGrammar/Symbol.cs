@@ -31,6 +31,17 @@ namespace Parsers.Grammar
             return Value;
         }
     }
+
+    /// <summary>
+    /// Collection of Built in Symbols for BNF
+    /// </summary>
+    public static class Symbols
+    {
+        /// <summary>
+        /// Represents an ε Symbol
+        /// </summary>
+        public static Symbol EPSILON { get; } = new("ε");
+    }
     public enum SymbolType
     {
         Default,

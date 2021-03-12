@@ -82,3 +82,5 @@ parser.Parse(new() { new("i"), new("*"), new("i"), new("+"), new("i") });
           |     |         |
           i    id         id
 */
+
+WriteLine(Symbols.EPSILON);
