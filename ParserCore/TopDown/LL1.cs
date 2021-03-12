@@ -20,21 +20,9 @@ namespace Parsers.TopDown
         }
         public HashSet<Symbol> Follow(Symbol s)
         {
-            var res = new HashSet<Symbol>();
-            if (s.Type == SymbolType.Start)
-                res.Add(Symbols.DOLLAR);
-
-            return res;
+            return Table.Follow(s);
         }
 
-        HashSet<Symbol> GetFollow(Production p, Symbol s, ref Dictionary<Symbol, HashSet<Symbol>> MemoFollow)
-        {
-            var res = new HashSet<Symbol>();
-            //foreach (var prods in Table.Productions.Values)
-            {
-            }
-            return res;
-        }
 
     }
 }

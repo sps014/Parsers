@@ -1,5 +1,7 @@
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Parsers.Grammar
@@ -9,7 +11,7 @@ namespace Parsers.Grammar
     /// alternate production should be created as separate instance aka A-> eps | aAa |bBA
     ///should be A-> epsilon   , A-> aAa , A-> bBA
     /// </summary>
-    public readonly struct Production : IEnumerable<Symbol>
+    public readonly struct Production : IEnumerable<Symbol>, IEqualityComparer<Production>
     {
 
         /// <summary>
@@ -26,7 +28,7 @@ namespace Parsers.Grammar
         /// create a production with left symbol name
         /// </summary>
         /// <param name="leftSymbolname">Left hand side Terminal name</param>
-        public Production(string leftSymbolname)
+        public Production([DisallowNull] string leftSymbolname)
         {
             Left = leftSymbolname;
             Right = new();
@@ -51,6 +53,16 @@ namespace Parsers.Grammar
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return Right.GetEnumerator();
+        }
+
+        public bool Equals(Production x, Production y)
+        {
+            return x.Left == y.Left && y.RightAsString == x.RightAsString;
+        }
+
+        public int GetHashCode([DisallowNull] Production obj)
+        {
+            return HashCode.Combine(obj.Right.GetHashCode(), obj.Left.GetHashCode());
         }
     }
 

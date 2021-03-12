@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Parsers.Grammar
 {
     /// <summary>
     /// Represent a symbol in BNF
     /// </summary>
-    public readonly struct Symbol
+    public readonly struct Symbol : IEqualityComparer<Symbol>
     {
         /// <summary>
         /// Symbol Value ie a , A ,Expr
@@ -21,7 +23,7 @@ namespace Parsers.Grammar
         /// </summary>
         /// <param name="symbolName"></param>
         /// <param name="symbolType"></param>
-        public Symbol(string symbolName, SymbolType symbolType = SymbolType.Terminal)
+        public Symbol([DisallowNull] string symbolName, SymbolType symbolType = SymbolType.Terminal)
         {
             Value = symbolName;
             Type = symbolType;
@@ -29,6 +31,16 @@ namespace Parsers.Grammar
         public override string ToString()
         {
             return Value;
+        }
+
+        public bool Equals(Symbol x, Symbol y)
+        {
+            return x.Value == y.Value && y.Type == x.Type;
+        }
+
+        public int GetHashCode([DisallowNull] Symbol obj)
+        {
+            return HashCode.Combine(obj.Value.GetHashCode(), obj.Type.GetHashCode());
         }
     }
 

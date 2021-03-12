@@ -7,9 +7,9 @@ namespace Parsers.Grammar
 {
     public class ProductionTable : IEnumerable<List<Production>>
     {
-        private Dictionary<string, List<Production>> Productions = new();
+        private Dictionary<string, List<Production>> productions = new();
         private readonly Dictionary<string, string> inverseProductions = new();
-        public Dictionary<Symbol, List<(int Index, Production Production)>> NonTerminalPointers = new();
+        public Dictionary<string, List<(int Index, Production Production)>> NonTerminalPointers = new();
         public Symbol StartSymbol { get; set; }
 
         public ProductionTable(List<Production> prods = null)
@@ -25,8 +25,8 @@ namespace Parsers.Grammar
         {
             inverseProductions.Add(p.RightAsString, p.Left);
 
-            if (!Productions.ContainsKey(p.Left))
-                Productions.Add(p.Left, new List<Production>());
+            if (!productions.ContainsKey(p.Left))
+                productions.Add(p.Left, new List<Production>());
 
             foreach (var (pd, i) in p.Right.Select((v, i) => (v, i)))
             {
@@ -34,22 +34,22 @@ namespace Parsers.Grammar
                     Terminals.Add(pd.Value);
                 else if (pd.Type == SymbolType.NonTerminal)
                 {
-                    if (!NonTerminalPointers.ContainsKey(pd))
+                    if (!NonTerminalPointers.ContainsKey(pd.Value))
                     {
-                        NonTerminalPointers.Add(pd, new());
+                        NonTerminalPointers.Add(pd.Value, new());
                     }
-                    NonTerminalPointers[pd].Add((i, p));
+                    NonTerminalPointers[pd.Value].Add((i, p));
                     NonTerminals.Add(pd.Value);
                 }
                 if (pd.Type == SymbolType.Start)
                     StartSymbol = pd;
             }
-            Productions[p.Left].Add(p);
+            productions[p.Left].Add(p);
         }
         public void AddRange([NotNull] List<Production> prods) =>
             prods.ForEach(v => Add(v));
         public bool Contains([NotNull] string nonTerminalSymbol) =>
-            Productions.ContainsKey(nonTerminalSymbol);
+            productions.ContainsKey(nonTerminalSymbol);
 
         public bool ContainsProduction([NotNull] string production) =>
             inverseProductions.ContainsKey(production);
@@ -80,6 +80,50 @@ namespace Parsers.Grammar
             return res;
         }
 
+        public HashSet<Symbol> Follow(Symbol s)
+        {
+            var res = new HashSet<Symbol>();
+
+            if (s.Type == SymbolType.Start)
+                res.Add(Symbols.DOLLAR);
+
+            GetFollow(s)
+            .ToList()
+            .ForEach(x => res.Add(x));
+
+            return res;
+        }
+
+        private HashSet<Symbol> GetFollow(Symbol s)
+        {
+            var res = new HashSet<Symbol>();
+            foreach (var (index, production) in NonTerminalPointers[s.Value])
+            {
+                if (index == production.Right.Count - 1)
+                {
+                    Follow(new Symbol(production.Left, SymbolType.NonTerminal))
+                   .ToList()
+                   .ForEach(x => res.Add(x));
+                }
+                else
+                {
+                    foreach (var firstSymbol in First(production.Right[index + 1]))
+                    {
+                        if (firstSymbol.Value != Symbols.EPSILON.Value)
+                            res.Add(firstSymbol);
+                        else
+                        {
+                            Follow(production.Right[index + 1])
+                            .ToList()
+                            .ForEach(x => res.Add(x));
+                        }
+
+                    }
+                }
+            }
+            return res;
+        }
+
         /// <summary>
         /// Find LHS symbol from a Production 
         /// </summary>
@@ -89,10 +133,10 @@ namespace Parsers.Grammar
             ContainsProduction(production) ? inverseProductions[production] : null;
 
         public IEnumerator<List<Production>> GetEnumerator() =>
-            Productions.Values.GetEnumerator();
+            productions.Values.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() =>
-            Productions.Values.GetEnumerator();
+            productions.Values.GetEnumerator();
 
         /// <summary>
         /// Get set of all terminals in all productions.
@@ -112,8 +156,8 @@ namespace Parsers.Grammar
         {
             get
             {
-                if (Productions.ContainsKey(nonTerminalSymbol))
-                    return Productions[nonTerminalSymbol];
+                if (productions.ContainsKey(nonTerminalSymbol))
+                    return productions[nonTerminalSymbol];
 
                 return null;
             }
@@ -122,8 +166,8 @@ namespace Parsers.Grammar
         {
             get
             {
-                if (Productions.ContainsKey(nonTerminalSymbol.Value))
-                    return Productions[nonTerminalSymbol.Value];
+                if (productions.ContainsKey(nonTerminalSymbol.Value))
+                    return productions[nonTerminalSymbol.Value];
 
                 return null;
             }

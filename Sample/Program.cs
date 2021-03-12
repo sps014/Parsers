@@ -30,12 +30,13 @@ ProductionTable table = new();
 // table.Add(production2);
 
 
-var input = @"T->iE+T
-T->F
-E->F*F
+var input = @"S->ACS
+C->a
+C->b
 F->M
 M->j
-F->ε";
+A->m
+C->ε";
 
 foreach (var v in input.Split("\n"))
 {
@@ -67,23 +68,9 @@ foreach (var values in table)
     }
 }
 
-table.StartSymbol = new("T");
-//A-> return Statement;
-
-
-RecursiveDescentParser parser = new(table);
-parser.Parse(new() { new("i"), new("*"), new("i"), new("+"), new("i") });
-/*
-                    T
-             /     |     \
-             E     +      T
-           / | \          |
-          F  *  F         F
-          |     |         |
-          i    id         id
-*/
+table.StartSymbol = new("S", SymbolType.Start);
 
 LL1 lL1 = new(table);
-var vv=lL1.First(new("E"));
+var vv = lL1.Follow(new("A"));
 
 WriteLine(Symbols.EPSILON);
