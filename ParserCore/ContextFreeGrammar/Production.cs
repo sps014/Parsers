@@ -9,7 +9,7 @@ namespace Parsers.Grammar
     /// alternate production should be created as separate instance aka A-> eps | aAa |bBA
     ///should be A-> epsilon   , A-> aAa , A-> bBA
     /// </summary>
-    public class Production
+    public readonly struct Production
     {
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace Parsers.Grammar
         /// Get the Right Hand Side of the production.
         /// ie. A->a+A  will return a+A 
         /// </summary>
-        public List<Symbol> Right { get; set; }
+        public List<Symbol> Right { get; init; }
         /// <summary>
         /// create a production with left symbol name
         /// </summary>
@@ -29,6 +29,7 @@ namespace Parsers.Grammar
         public Production(string leftSymbolname)
         {
             Left = leftSymbolname;
+            Right = new();
         }
         /// <summary>
         /// Get the Right Hand Side of the production as String.

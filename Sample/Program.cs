@@ -45,8 +45,6 @@ foreach (var v in input.Split("\n"))
         if (s == '\r')
             continue;
 
-        production1.Right ??= new List<Symbol>();
-
         if (char.IsUpper(s))
         {
             production1.Right.Add(new Symbol(s.ToString(), SymbolType.NonTerminal));

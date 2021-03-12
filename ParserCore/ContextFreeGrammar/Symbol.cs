@@ -5,7 +5,7 @@ namespace Parsers.Grammar
     /// <summary>
     /// Represent a symbol in BNF
     /// </summary>
-    public class Symbol
+    public readonly struct Symbol
     {
         /// <summary>
         /// Symbol Value ie a , A ,Expr
