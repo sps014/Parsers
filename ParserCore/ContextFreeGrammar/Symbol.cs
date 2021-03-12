@@ -2,18 +2,33 @@ using System.Collections.Generic;
 
 namespace Parsers.Grammar
 {
+    /// <summary>
+    /// Represent a symbol in BNF
+    /// </summary>
     public class Symbol
     {
-        public string SymbolName { get; init; }
+        /// <summary>
+        /// Symbol Value ie a , A ,Expr
+        /// </summary>
+        public string Value { get; init; }
+        /// <summary>
+        /// Symbol Type ie Terminal or Non terminal or start
+        /// </summary>
         public SymbolType Type { get; init; }
+
+        /// <summary>
+        /// Represent a basic Symbol in BNF
+        /// </summary>
+        /// <param name="symbolName"></param>
+        /// <param name="symbolType"></param>
         public Symbol(string symbolName, SymbolType symbolType = SymbolType.Terminal)
         {
-            SymbolName = symbolName;
+            Value = symbolName;
             Type = symbolType;
         }
         public override string ToString()
         {
-            return SymbolName;
+            return Value;
         }
     }
     public enum SymbolType

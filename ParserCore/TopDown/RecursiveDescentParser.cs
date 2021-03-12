@@ -46,7 +46,7 @@ namespace Parsers.TopDown
         public void Print(SyntaxNode node, int sp = 4)
         {
             node ??= Root;
-            Console.WriteLine("".PadRight(sp,'-')+node.Value.SymbolName);
+            Console.WriteLine("".PadRight(sp,'-')+node.Value.Value);
             foreach (var v in node.Children)
             {
                 Print(v, sp + 4);
@@ -63,7 +63,7 @@ namespace Parsers.TopDown
                 return true;
             }
 
-            foreach (var o in table[current.SymbolName])
+            foreach (var o in table[current.Value])
             {
                 Console.WriteLine($"Exploring Production {o}");
 
@@ -73,7 +73,7 @@ namespace Parsers.TopDown
                     parent.Children.Add(nn);
                     if (sym.Type == SymbolType.NonTerminal)
                     {
-                        Console.WriteLine($"Exploring Symbol {sym.SymbolName}");
+                        Console.WriteLine($"Exploring Symbol {sym.Value}");
 
                         if (!Match(sym, nn, ref pos, oldPos))
                         {
@@ -84,12 +84,12 @@ namespace Parsers.TopDown
                     }
                     else
                     {
-                        if (pos < input.Count && input[pos].SymbolName == sym.SymbolName)
+                        if (pos < input.Count && input[pos].Value == sym.Value)
                         {
                             pos++;
-                            Console.WriteLine($"Matched Terminal {sym.SymbolName}  result={string.Join("", input.Select(x => x.SymbolName).Take(pos))}");
+                            Console.WriteLine($"Matched Terminal {sym.Value}  result={string.Join("", input.Select(x => x.Value).Take(pos))}");
                         }
-                        else if (pos < input.Count && input[pos].SymbolName != sym.SymbolName)
+                        else if (pos < input.Count && input[pos].Value != sym.Value)
                         {
                             pos = oldPos;
                             return false;

@@ -71,7 +71,6 @@ table.StartSymbol = new("T");
 //A-> return Statement;
 
 
-
 RecursiveDescentParser parser = new(table);
 parser.Parse(new() { new("i"), new("*"), new("i"), new("+"), new("i") });
 /*

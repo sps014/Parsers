@@ -30,10 +30,10 @@ namespace Parsers.Grammar
             foreach (var pd in p.Right)
             {
                 if (pd.Type == SymbolType.Terminal)
-                    Terminals.Add(pd.SymbolName);
+                    Terminals.Add(pd.Value);
                 else if (pd.Type == SymbolType.NonTerminal)
-                    NonTerminals.Add(pd.SymbolName);
-                    
+                    NonTerminals.Add(pd.Value);
+
                 if (pd.Type == SymbolType.Start)
                     StartSymbol = pd;
             }
