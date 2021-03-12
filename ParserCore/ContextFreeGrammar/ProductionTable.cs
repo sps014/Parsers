@@ -48,7 +48,7 @@ namespace Parsers.Grammar
             inverseProductions.ContainsKey(production);
 
         /// <summary>
-        /// Find LHS symbol from Production 
+        /// Find LHS symbol from a Production 
         /// </summary>
         /// <param name="production">Production as string</param>
         /// <returns>return LHS symbol string</returns>
@@ -70,13 +70,27 @@ namespace Parsers.Grammar
         /// </summary>
         public HashSet<string> NonTerminals { get; private set; } = new();
 
-
+        /// <summary>
+        /// fetch list of non terminal's production
+        /// </summary>
+        /// <param name="nonTerminalSymbol">value for non terminal</param>
+        /// <returns>returns list of non terminal's production</returns>
         public List<Production> this[[NotNull] string nonTerminalSymbol]
         {
             get
             {
                 if (productions.ContainsKey(nonTerminalSymbol))
                     return productions[nonTerminalSymbol];
+
+                return null;
+            }
+        }
+        public List<Production> this[[NotNull] Symbol nonTerminalSymbol]
+        {
+            get
+            {
+                if (productions.ContainsKey(nonTerminalSymbol.Value))
+                    return productions[nonTerminalSymbol.Value];
 
                 return null;
             }
