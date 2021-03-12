@@ -10,11 +10,11 @@ namespace Parsers.Grammar
         /// <summary>
         /// Symbol Value ie a , A ,Expr
         /// </summary>
-        public string Value { get; init; }
+        public readonly string Value { get; init; }
         /// <summary>
         /// Symbol Type ie Terminal or Non terminal or start
         /// </summary>
-        public SymbolType Type { get; init; }
+        public readonly SymbolType Type { get; init; }
 
         /// <summary>
         /// Represent a basic Symbol in BNF

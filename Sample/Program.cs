@@ -30,10 +30,12 @@ ProductionTable table = new();
 // table.Add(production2);
 
 
-var input = @"T->E+T
+var input = @"T->iE+T
 T->F
 E->F*F
-F->i";
+F->M
+M->j
+F->ε";
 
 foreach (var v in input.Split("\n"))
 {
@@ -80,5 +82,8 @@ parser.Parse(new() { new("i"), new("*"), new("i"), new("+"), new("i") });
           |     |         |
           i    id         id
 */
+
+LL1 lL1 = new(table);
+var vv=lL1.First(new("E"));
 
 WriteLine(Symbols.EPSILON);

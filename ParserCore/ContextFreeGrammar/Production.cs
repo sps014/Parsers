@@ -9,19 +9,19 @@ namespace Parsers.Grammar
     /// alternate production should be created as separate instance aka A-> eps | aAa |bBA
     ///should be A-> epsilon   , A-> aAa , A-> bBA
     /// </summary>
-    public readonly struct Production
+    public readonly struct Production : IEnumerable<Symbol>
     {
 
         /// <summary>
         /// Get the Left Hand Side of the production.
         /// ie. A->a+A  will return A 
         /// </summary>
-        public string Left { get; init; }
+        public readonly string Left { get; init; }
         /// <summary>
         /// Get the Right Hand Side of the production.
         /// ie. A->a+A  will return a+A 
         /// </summary>
-        public List<Symbol> Right { get; init; }
+        public readonly List<Symbol> Right { get; init; }
         /// <summary>
         /// create a production with left symbol name
         /// </summary>
@@ -35,12 +35,22 @@ namespace Parsers.Grammar
         /// Get the Right Hand Side of the production as String.
         /// ie. A->a+A  will return "a+A" 
         /// </summary>
-        public string RightAsString => string.Join("", Right.Select(x => x.Value));
+        public readonly string RightAsString => string.Join("", Right.Select(x => x.Value));
 
         public override string ToString()
         {
             var symbols = Right.Select(x => x.Value);
             return $"{Left}->{string.Join("", symbols)}";
+        }
+
+        public IEnumerator<Symbol> GetEnumerator()
+        {
+            return Right.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return Right.GetEnumerator();
         }
     }
 
