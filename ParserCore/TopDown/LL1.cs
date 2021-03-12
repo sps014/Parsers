@@ -16,26 +16,22 @@ namespace Parsers.TopDown
 
         public HashSet<Symbol> First([NotNull] Symbol p)
         {
-            var res = new HashSet<Symbol>();
-            foreach (var v in Table[p])
-            {
-                GetFirst(v).ToList().ForEach(x => res.Add(x));
-            }
-            return res;
+            return Table.First(p);
         }
-        HashSet<Symbol> GetFirst([NotNull] Production p)
+        public HashSet<Symbol> Follow(Symbol s)
         {
             var res = new HashSet<Symbol>();
-            if (p.Right[0].Type == SymbolType.Terminal)
+            if (s.Type == SymbolType.Start)
+                res.Add(Symbols.DOLLAR);
+
+            return res;
+        }
+
+        HashSet<Symbol> GetFollow(Production p, Symbol s, ref Dictionary<Symbol, HashSet<Symbol>> MemoFollow)
+        {
+            var res = new HashSet<Symbol>();
+            //foreach (var prods in Table.Productions.Values)
             {
-                res.Add(p.Right[0]);
-            }
-            else if (p.Right[0].Type == SymbolType.NonTerminal)
-            {
-                foreach (var s in Table[p.Right[0]])
-                {
-                    GetFirst(s).ToList().ForEach(x => res.Add(x));
-                }
             }
             return res;
         }

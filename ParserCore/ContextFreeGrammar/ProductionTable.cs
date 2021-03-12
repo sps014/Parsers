@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Parsers.Grammar
 {
     public class ProductionTable : IEnumerable<List<Production>>
     {
-        private readonly Dictionary<string, List<Production>> productions = new();
+        private Dictionary<string, List<Production>> Productions = new();
         private readonly Dictionary<string, string> inverseProductions = new();
-
+        public Dictionary<Symbol, List<(int Index, Production Production)>> NonTerminalPointers = new();
         public Symbol StartSymbol { get; set; }
 
         public ProductionTable(List<Production> prods = null)
@@ -24,28 +25,60 @@ namespace Parsers.Grammar
         {
             inverseProductions.Add(p.RightAsString, p.Left);
 
-            if (!productions.ContainsKey(p.Left))
-                productions.Add(p.Left, new List<Production>());
+            if (!Productions.ContainsKey(p.Left))
+                Productions.Add(p.Left, new List<Production>());
 
-            foreach (var pd in p.Right)
+            foreach (var (pd, i) in p.Right.Select((v, i) => (v, i)))
             {
                 if (pd.Type == SymbolType.Terminal)
                     Terminals.Add(pd.Value);
                 else if (pd.Type == SymbolType.NonTerminal)
+                {
+                    if (!NonTerminalPointers.ContainsKey(pd))
+                    {
+                        NonTerminalPointers.Add(pd, new());
+                    }
+                    NonTerminalPointers[pd].Add((i, p));
                     NonTerminals.Add(pd.Value);
-
+                }
                 if (pd.Type == SymbolType.Start)
                     StartSymbol = pd;
             }
-            productions[p.Left].Add(p);
+            Productions[p.Left].Add(p);
         }
         public void AddRange([NotNull] List<Production> prods) =>
             prods.ForEach(v => Add(v));
         public bool Contains([NotNull] string nonTerminalSymbol) =>
-            productions.ContainsKey(nonTerminalSymbol);
+            Productions.ContainsKey(nonTerminalSymbol);
 
         public bool ContainsProduction([NotNull] string production) =>
             inverseProductions.ContainsKey(production);
+
+        public HashSet<Symbol> First([NotNull] Symbol p)
+        {
+            var res = new HashSet<Symbol>();
+            foreach (var v in this[p])
+            {
+                GetFirst(v).ToList().ForEach(x => res.Add(x));
+            }
+            return res;
+        }
+        private HashSet<Symbol> GetFirst([NotNull] Production p)
+        {
+            var res = new HashSet<Symbol>();
+            if (p.Right[0].Type == SymbolType.Terminal)
+            {
+                res.Add(p.Right[0]);
+            }
+            else if (p.Right[0].Type == SymbolType.NonTerminal)
+            {
+                foreach (var s in this[p.Right[0]])
+                {
+                    GetFirst(s).ToList().ForEach(x => res.Add(x));
+                }
+            }
+            return res;
+        }
 
         /// <summary>
         /// Find LHS symbol from a Production 
@@ -56,10 +89,10 @@ namespace Parsers.Grammar
             ContainsProduction(production) ? inverseProductions[production] : null;
 
         public IEnumerator<List<Production>> GetEnumerator() =>
-            productions.Values.GetEnumerator();
+            Productions.Values.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() =>
-            productions.Values.GetEnumerator();
+            Productions.Values.GetEnumerator();
 
         /// <summary>
         /// Get set of all terminals in all productions.
@@ -79,8 +112,8 @@ namespace Parsers.Grammar
         {
             get
             {
-                if (productions.ContainsKey(nonTerminalSymbol))
-                    return productions[nonTerminalSymbol];
+                if (Productions.ContainsKey(nonTerminalSymbol))
+                    return Productions[nonTerminalSymbol];
 
                 return null;
             }
@@ -89,8 +122,8 @@ namespace Parsers.Grammar
         {
             get
             {
-                if (productions.ContainsKey(nonTerminalSymbol.Value))
-                    return productions[nonTerminalSymbol.Value];
+                if (Productions.ContainsKey(nonTerminalSymbol.Value))
+                    return Productions[nonTerminalSymbol.Value];
 
                 return null;
             }

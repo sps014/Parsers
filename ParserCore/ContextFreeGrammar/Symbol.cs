@@ -41,6 +41,8 @@ namespace Parsers.Grammar
         /// Represents an ε Symbol
         /// </summary>
         public static Symbol EPSILON { get; } = new("ε");
+        public static Symbol DOLLAR { get; } = new("$");
+
     }
     public enum SymbolType
     {
