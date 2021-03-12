@@ -2,6 +2,7 @@
 using Parsers.Grammar;
 using System.Collections.Generic;
 using Parsers.TopDown;
+using System;
 
 ProductionTable table = new();
 
@@ -30,13 +31,13 @@ ProductionTable table = new();
 // table.Add(production2);
 
 
-var input = @"S->ACS
-C->a
-C->b
-F->M
-M->j
-A->m
-C->ε";
+var input = @"S->ABC
+A->DEF
+B->ε
+C->ε
+D->ε
+E->ε
+F->ε";
 
 foreach (var v in input.Split("\n"))
 {
@@ -71,6 +72,6 @@ foreach (var values in table)
 table.StartSymbol = new("S", SymbolType.Start);
 
 LL1 lL1 = new(table);
-var vv = lL1.Follow(new("A"));
+var vv = lL1.Follow(new("A", SymbolType.NonTerminal));
 
 WriteLine(Symbols.EPSILON);

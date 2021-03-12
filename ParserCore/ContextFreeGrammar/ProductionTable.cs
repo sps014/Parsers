@@ -23,7 +23,7 @@ namespace Parsers.Grammar
 
         public void Add([NotNull] Production p)
         {
-            inverseProductions.Add(p.RightAsString, p.Left);
+            inverseProductions.TryAdd(p.RightAsString, p.Left);
 
             if (!productions.ContainsKey(p.Left))
                 productions.Add(p.Left, new List<Production>());
@@ -56,11 +56,14 @@ namespace Parsers.Grammar
 
         public HashSet<Symbol> First([NotNull] Symbol p)
         {
+
             var res = new HashSet<Symbol>();
-            foreach (var v in this[p])
-            {
-                GetFirst(v).ToList().ForEach(x => res.Add(x));
-            }
+
+            if (p.Type == SymbolType.NonTerminal)
+                foreach (var v in this[p])
+                {
+                    GetFirst(v).ToList().ForEach(x => res.Add(x));
+                }
             return res;
         }
         private HashSet<Symbol> GetFirst([NotNull] Production p)
@@ -84,7 +87,7 @@ namespace Parsers.Grammar
         {
             var res = new HashSet<Symbol>();
 
-            if (s.Type == SymbolType.Start)
+            if (s.Value == StartSymbol.Value)
                 res.Add(Symbols.DOLLAR);
 
             GetFollow(s)
@@ -97,6 +100,8 @@ namespace Parsers.Grammar
         private HashSet<Symbol> GetFollow(Symbol s)
         {
             var res = new HashSet<Symbol>();
+            if (s.Type == SymbolType.NonTerminal && !NonTerminalPointers.ContainsKey(s.Value))
+                return res;
             foreach (var (index, production) in NonTerminalPointers[s.Value])
             {
                 if (index == production.Right.Count - 1)
@@ -107,18 +112,23 @@ namespace Parsers.Grammar
                 }
                 else
                 {
-                    foreach (var firstSymbol in First(production.Right[index + 1]))
-                    {
-                        if (firstSymbol.Value != Symbols.EPSILON.Value)
-                            res.Add(firstSymbol);
-                        else
+                    if (production.Right[index + 1].Type == SymbolType.Terminal)
+                        res.Add(production.Right[index + 1]);
+                    else
+                        foreach (var firstSymbol in First(production.Right[index + 1]))
                         {
-                            Follow(production.Right[index + 1])
-                            .ToList()
-                            .ForEach(x => res.Add(x));
-                        }
+                            if (firstSymbol.Value != Symbols.EPSILON.Value)
+                                res.Add(firstSymbol);
+                            else
+                            {
 
-                    }
+                                if (production.Right[index + 1].Type == SymbolType.NonTerminal)
+                                    Follow(production.Right[index + 1])
+                                    .ToList()
+                                    .ForEach(x => res.Add(x));
+                            }
+
+                        }
                 }
             }
             return res;
