@@ -5,26 +5,61 @@ using System.Linq;
 
 namespace Parsers.Grammar
 {
+    /// <summary>
+    /// Utility class to maintain production lists for calculation of 1st and follow
+    /// </summary>
     public class ProductionTable : IEnumerable<List<Production>>
     {
-        private Dictionary<string, List<Production>> productions = new();
+        /// <summary>
+        /// Maintains map of All productions associated with non terminal
+        /// </summary>
+        private readonly Dictionary<string, List<Production>> productions = new();
+
+        /// <summary>
+        /// Inverse Map from Production to symbol
+        /// </summary>
         private readonly Dictionary<string, string> inverseProductions = new();
-        public Dictionary<string, List<(int Index, Production Production)>> NonTerminalPointers = new();
+
+        /// <summary>
+        /// Maintains the index and production where a non terminal appeared
+        /// </summary>
+        private readonly Dictionary<string, List<(int Index, Production Production)>> nonTerminalPointers = new();
+        /// <summary>
+        /// Indicates Start Symbol non terminal
+        /// </summary>
         public Symbol StartSymbol { get; set; }
 
-        public ProductionTable(List<Production> prods = null)
+        /// <summary>
+        /// Utility class to maintain production lists for calculation of 1st and follow
+        /// </summary>
+        /// <param name="prods">a production list</param>
+        /// <param name="startSymbol">start non terminal</param>
+        public ProductionTable(List<Production> prods = null, Symbol? startSymbol = null)
         {
             if (prods == null)
                 return;
 
+            if (startSymbol.HasValue)
+            {
+                if (startSymbol.Value.Type != SymbolType.NonTerminal)
+                    throw new System.Exception("Start Symbol must be non terminal.");
+                else
+                    StartSymbol = startSymbol.Value;
+            }
+
             AddRange(prods);
 
         }
-
+        /// <summary>
+        /// Add a  production
+        /// </summary>
+        /// <param name="p">a production </param>
         public void Add([NotNull] Production p)
         {
+            //maintain inverse list
             inverseProductions.TryAdd(p.RightAsString, p.Left);
 
+            //Add production
             if (!productions.ContainsKey(p.Left))
                 productions.Add(p.Left, new List<Production>());
 
@@ -34,16 +69,19 @@ namespace Parsers.Grammar
                     Terminals.Add(pd.Value);
                 else if (pd.Type == SymbolType.NonTerminal)
                 {
-                    if (!NonTerminalPointers.ContainsKey(pd.Value))
+                    //maintain non terminal index production pointer for follow calculation
+                    if (!nonTerminalPointers.ContainsKey(pd.Value))
                     {
-                        NonTerminalPointers.Add(pd.Value, new());
+                        nonTerminalPointers.Add(pd.Value, new());
                     }
-                    NonTerminalPointers[pd.Value].Add((i, p));
+                    nonTerminalPointers[pd.Value].Add((i, p));
                     NonTerminals.Add(pd.Value);
                 }
+                //update start symbol
                 if (pd.Type == SymbolType.Start)
                     StartSymbol = pd;
             }
+
             productions[p.Left].Add(p);
         }
         public void AddRange([NotNull] List<Production> prods) =>
@@ -54,6 +92,11 @@ namespace Parsers.Grammar
         public bool ContainsProduction([NotNull] string production) =>
             inverseProductions.ContainsKey(production);
 
+        /// <summary>
+        /// calculate first for a symbol
+        /// </summary>
+        /// <param name="p">symbol to cal first</param>
+        /// <returns>set of termials</returns>
         public HashSet<Symbol> First([NotNull] Symbol p)
         {
 
@@ -113,12 +156,17 @@ namespace Parsers.Grammar
             return res;
         }
 
-        
+        /// <summary>
+        /// Calculate follow for symbol
+        /// </summary>
+        /// <param name="s">non terminal symbol</param>
+        /// <returns>set of terminal </returns>
         public HashSet<Symbol> Follow(Symbol s)
         {
             HashSet<Symbol> res;
 
             res = GetFollow(s);
+            //if start symbol add $
             if (s.Value == StartSymbol.Value)
                 res.Add(Symbols.DOLLAR);
 
@@ -128,10 +176,16 @@ namespace Parsers.Grammar
         private HashSet<Symbol> GetFollow(Symbol s)
         {
             var res = new HashSet<Symbol>();
-            if (s.Type == SymbolType.NonTerminal && !NonTerminalPointers.ContainsKey(s.Value))
+
+            //if not a non terminal or non terminal with no production return 
+            if (s.Type == SymbolType.NonTerminal && !nonTerminalPointers.ContainsKey(s.Value))
                 return res;
-            foreach (var (index, production) in NonTerminalPointers[s.Value])
+
+
+            //get index,production of non terminal in all production it is present right hand side
+            foreach (var (index, production) in nonTerminalPointers[s.Value])
             {
+                //if last index on right side then res is Follow of left
                 if (index == production.Right.Count - 1)
                 {
                     if (production.Left != s.Value)
@@ -139,16 +193,19 @@ namespace Parsers.Grammar
                 }
                 else
                 {
+                    //if terminal add to result
                     if (production.Right[index + 1].Type == SymbolType.Terminal)
                         res.Add(production.Right[index + 1]);
                     else
+                        //first(next) symbol is result
                         foreach (var firstSymbol in First(production.Right[index + 1]))
                         {
+                            //if first of next not epsilon add to result 
                             if (firstSymbol.Value != Symbols.EPSILON.Value)
                                 res.Add(firstSymbol);
                             else
                             {
-
+                                //if non terminal and epsilon we need to add follow(next)
                                 if (production.Right[index + 1].Type == SymbolType.NonTerminal)
                                     res.UnionWith(Follow(production.Right[index + 1]));
                             }
@@ -197,6 +254,11 @@ namespace Parsers.Grammar
                 return null;
             }
         }
+        /// <summary>
+        /// fetch list of non terminal's production
+        /// </summary>
+        /// <param name="nonTerminalSymbol">value for non terminal</param>
+        /// <returns>returns list of non terminal's production</returns>
         public List<Production> this[[NotNull] Symbol nonTerminalSymbol]
         {
             get
