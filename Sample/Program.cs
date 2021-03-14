@@ -31,13 +31,15 @@ ProductionTable table = new();
 // table.Add(production2);
 
 
-var input = @"S->aSbS
-S->bSaS
-S->ε
+var input = @"S->aBDh
+B->cC
+C->bC
 C->ε
-D->ε
+D->EF
+E->g
 E->ε
-F->ε";
+F->f
+F->εd";
 
 foreach (var v in input.Split("\n"))
 {
@@ -72,6 +74,7 @@ foreach (var values in table)
 table.StartSymbol = new("S", SymbolType.Start);
 
 LL1 lL1 = new(table);
-var vv = lL1.Follow(new("S", SymbolType.NonTerminal));
+var vvv = lL1.First(new("D",SymbolType.NonTerminal));
+//var vv = lL1.Follow(new("B", SymbolType.NonTerminal));
 
 WriteLine(Symbols.EPSILON);

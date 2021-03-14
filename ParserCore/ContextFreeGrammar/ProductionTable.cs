@@ -66,18 +66,25 @@ namespace Parsers.Grammar
                 }
             return res;
         }
-        private HashSet<Symbol> GetFirst([NotNull] Production p)
+        private HashSet<Symbol> GetFirst([NotNull] Production p, int pos = 0)
         {
             var res = new HashSet<Symbol>();
-            if (p.Right[0].Type == SymbolType.Terminal)
+            if (pos >= p.Right.Count)
+                return res;
+
+            if (p.Right[pos].Type == SymbolType.Terminal)
             {
-                res.Add(p.Right[0]);
+                res.Add(p.Right[pos]);
             }
-            else if (p.Right[0].Type == SymbolType.NonTerminal)
+            else if (p.Right[pos].Type == SymbolType.NonTerminal)
             {
-                foreach (var s in this[p.Right[0]])
+                foreach (var v in this[p.Right[pos]])
                 {
-                    GetFirst(s).ToList().ForEach(x => res.Add(x));
+                    GetFirst(v).ToList().ForEach(x => res.Add(x));
+                    if (res.Contains(Symbols.EPSILON))
+                    {
+                        GetFirst(v, pos + 1).ToList().ForEach(x => res.Add(x));
+                    }
                 }
             }
             return res;
@@ -85,14 +92,11 @@ namespace Parsers.Grammar
 
         public HashSet<Symbol> Follow(Symbol s)
         {
-            var res = new HashSet<Symbol>();
+            HashSet<Symbol> res;
 
+            res = GetFollow(s);
             if (s.Value == StartSymbol.Value)
                 res.Add(Symbols.DOLLAR);
-
-            GetFollow(s)
-            .ToList()
-            .ForEach(x => res.Add(x));
 
             return res;
         }
