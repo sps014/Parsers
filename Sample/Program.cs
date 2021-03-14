@@ -78,7 +78,7 @@ foreach (var values in table)
 table.StartSymbol = new("S", SymbolType.Start);
 
 LL1 lL1 = new(table);
-var vvv = lL1.First(new("D",SymbolType.NonTerminal));
+var vvv = lL1.Follow(new("F", SymbolType.NonTerminal));
 //var vv = lL1.Follow(new("B", SymbolType.NonTerminal));
 
 WriteLine(Symbols.EPSILON);

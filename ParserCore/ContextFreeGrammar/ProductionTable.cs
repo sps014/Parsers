@@ -69,26 +69,39 @@ namespace Parsers.Grammar
 
             return res;
         }
+
+        /// <summary>
+        /// Recursive Function to Calculate first
+        /// </summary>
+        /// <param name="p">current production</param>
+        /// <param name="pos">position of element whose first to calculate used to handle espilon case</param>
+        /// <returns>set of symbols</returns>
         private HashSet<Symbol> GetFirst([NotNull] Production p, int pos = 0)
         {
             var res = new HashSet<Symbol>();
+            //if we are  out of symbols in production return 
             if (pos >= p.Right.Count)
                 return res;
 
+            //if we have  terminal add in result
             if (p.Right[pos].Type == SymbolType.Terminal)
             {
                 res.Add(p.Right[pos]);
             }
             else if (p.Right[pos].Type == SymbolType.NonTerminal)
             {
+                //if non terminal Look for each of its production
                 foreach (var v in this[p.Right[pos]])
                 {
                     var l = GetFirst(v);
 
+                    // if result has epsilon 
                     if (l.Contains(Symbols.EPSILON))
                     {
+                        //if esp is not last symbol we need to subsitute esp in production or simply recursive call with pos+1  
                         if (pos < p.Right.Count - 1)
                         {
+                            //we dont put epsilon then in result
                             l.Remove(Symbols.EPSILON);
                             res.UnionWith(GetFirst(p, pos + 1));
 
@@ -100,6 +113,7 @@ namespace Parsers.Grammar
             return res;
         }
 
+        
         public HashSet<Symbol> Follow(Symbol s)
         {
             HashSet<Symbol> res;
@@ -121,9 +135,7 @@ namespace Parsers.Grammar
                 if (index == production.Right.Count - 1)
                 {
                     if (production.Left != s.Value)
-                        Follow(new Symbol(production.Left, SymbolType.NonTerminal))
-                       .ToList()
-                       .ForEach(x => res.Add(x));
+                        res.UnionWith(Follow(new Symbol(production.Left, SymbolType.NonTerminal)));
                 }
                 else
                 {
@@ -138,9 +150,7 @@ namespace Parsers.Grammar
                             {
 
                                 if (production.Right[index + 1].Type == SymbolType.NonTerminal)
-                                    Follow(production.Right[index + 1])
-                                    .ToList()
-                                    .ForEach(x => res.Add(x));
+                                    res.UnionWith(Follow(production.Right[index + 1]));
                             }
 
                         }
