@@ -40,6 +40,10 @@ E->g
 E->ε
 F->f
 F->εd";
+/*
+    first(D)= first(E)  {if first(E) is esp then first(F)}
+    first(D)={first(E)- esp} U {first(F)} 
+*/
 
 foreach (var v in input.Split("\n"))
 {

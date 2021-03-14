@@ -62,8 +62,11 @@ namespace Parsers.Grammar
             if (p.Type == SymbolType.NonTerminal)
                 foreach (var v in this[p])
                 {
-                    GetFirst(v).ToList().ForEach(x => res.Add(x));
+                    res.UnionWith(GetFirst(v));
                 }
+            else if (p.Type == SymbolType.Terminal)
+                res.Add(p);
+
             return res;
         }
         private HashSet<Symbol> GetFirst([NotNull] Production p, int pos = 0)
@@ -80,11 +83,18 @@ namespace Parsers.Grammar
             {
                 foreach (var v in this[p.Right[pos]])
                 {
-                    GetFirst(v).ToList().ForEach(x => res.Add(x));
-                    if (res.Contains(Symbols.EPSILON))
+                    var l = GetFirst(v);
+
+                    if (l.Contains(Symbols.EPSILON))
                     {
-                        GetFirst(v, pos + 1).ToList().ForEach(x => res.Add(x));
+                        if (pos < p.Right.Count - 1)
+                        {
+                            l.Remove(Symbols.EPSILON);
+                            res.UnionWith(GetFirst(p, pos + 1));
+
+                        }
                     }
+                    res.UnionWith(l);
                 }
             }
             return res;
