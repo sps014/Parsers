@@ -113,12 +113,11 @@ namespace Parsers.Grammar
             return res;
         }
 
-        /// <summary>
-        /// Recursive Function to Calculate first
-        /// </summary>
-        /// <param name="p">current production</param>
-        /// <param name="pos">position of element whose first to calculate used to handle espilon case</param>
-        /// <returns>set of symbols</returns>
+        /*
+        Recursive Function to Calculate first
+        p= current production
+        pos= position of element whose first to calculate used to handle espilon case
+        */
         private HashSet<Symbol> GetFirst([NotNull] Production p, int pos = 0)
         {
             var res = new HashSet<Symbol>();
