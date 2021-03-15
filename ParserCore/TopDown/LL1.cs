@@ -31,7 +31,7 @@ namespace Parsers.TopDown
 
             int x = nonTerminal.Count;
 
-            Production[,] table = new Production[x, y];
+            Production?[,] table = new Production?[x, y];
 
             foreach (var (sym, productions) in Table.Productions)
             {
@@ -40,14 +40,24 @@ namespace Parsers.TopDown
                     var first = Table.First(pd);
                     foreach (var t in first)
                     {
+                        int i = nonTerminal[sym];
+                        int j = 0;
                         if (t.Value != Symbols.EPSILON.Value)
                         {
-                            table[nonTerminal[sym], terminal[t.Value]] = pd;
+                            j = terminal[t.Value];
+                            if (table[i, j] != null && table[i, j].Value.ToString() != pd.ToString())
+                                return false;
+
+                            table[i, j] = pd;
                         }
                         else
                         {
                             foreach (var tt in Table.Follow(new(sym, SymbolType.NonTerminal)))
                             {
+
+                                j = terminal[tt.Value];
+                                if (table[i, j] != null && table[i, j].Value.ToString() != pd.ToString())
+                                    return false;
                                 table[nonTerminal[sym], terminal[tt.Value]] = pd;
                             }
                         }
