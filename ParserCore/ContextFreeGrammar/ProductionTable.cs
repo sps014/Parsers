@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
@@ -111,6 +112,15 @@ namespace Parsers.Grammar
                 res.Add(p);
 
             return res;
+        }
+        /// <summary>
+        /// Return first of specific production
+        /// </summary>
+        /// <param name="p">Production</param>
+        /// <returns>set of terminals</returns>
+        public HashSet<Symbol> First([NotNull] Production p)
+        {
+            return GetFirst(p);
         }
 
         /*
@@ -228,6 +238,9 @@ namespace Parsers.Grammar
 
         IEnumerator IEnumerable.GetEnumerator() =>
             productions.Values.GetEnumerator();
+
+        public IReadOnlyDictionary<string, List<Production>> Productions
+        => productions.ToImmutableDictionary();
 
         /// <summary>
         /// Get set of all terminals in all productions.
