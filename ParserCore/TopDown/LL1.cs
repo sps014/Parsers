@@ -136,7 +136,7 @@ namespace Parsers.TopDown
             var root = new SyntaxNode() { Value = stack.Peek() };
             tree.Root = root;
 
-            if (!DfsStack(ref input, stack,root, terminal, nonTerminal))
+            if (!DfsStack(ref input, stack, root, terminal, nonTerminal))
                 return false;
 
             if (input.Length == 0)
@@ -160,7 +160,8 @@ namespace Parsers.TopDown
                         if (top.Value == input[0].ToString())
                         {
                             var node = new SyntaxNode() { Value = top };
-                            parent.Children.Add(node);
+                            if (top != Symbols.DOLLAR)
+                                parent.Children.Add(node);
                             Console.WriteLine($"Matched {top.Value}=={input[0]}");
                             stack.Pop();
                             input = input[1..];

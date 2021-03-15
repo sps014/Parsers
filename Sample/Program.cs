@@ -31,9 +31,14 @@ ProductionTable table = new();
 // table.Add(production2);
 
 
-var input = @"S->AA
-A->aA
-A->b";
+var input = @"E->TG
+G->+TG
+T->FH
+H->*FH
+H->ε
+F->()
+F->i
+G->ε";
 //K->ε
 
 
@@ -67,11 +72,16 @@ foreach (var values in table)
     }
 }
 
-table.StartSymbol = new("S", SymbolType.Start | SymbolType.NonTerminal);
+table.StartSymbol = new("E", SymbolType.Start | SymbolType.NonTerminal);
 
 LL1 lL1 = new(table);
-var vvv = lL1.CreateParseTable();
-lL1.PrintParseTable();
-Write(lL1.StackImpl("abab"));
+if (lL1.CreateParseTable())
+{
+    lL1.PrintParseTable();
+    if(lL1.StackImpl("i+i"))
+    {
+        lL1.Tree.Print();
+    }
+}
 //var vv = lL1.Follow(new("B", SymbolType.NonTerminal));
 WriteLine();
