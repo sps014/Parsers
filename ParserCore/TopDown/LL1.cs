@@ -118,6 +118,8 @@ namespace Parsers.TopDown
 
         public bool StackImpl(string input)
         {
+            Console.WriteLine();
+
             input += Symbols.DOLLAR.Value;
 
             var terminal = Terminals;
@@ -134,7 +136,7 @@ namespace Parsers.TopDown
             var root = new SyntaxNode() { Value = stack.Peek() };
             tree.Root = root;
 
-            if (!DfsStack(ref input, stack, root, terminal, nonTerminal))
+            if (!DfsStack(ref input, stack,root, terminal, nonTerminal))
                 return false;
 
             if (input.Length == 0)
@@ -166,8 +168,13 @@ namespace Parsers.TopDown
                         }
                         else
                         {
+                            Console.WriteLine($"MisMatched {top.Value}!={input[0]}");
                             return false;
                         }
+                    }
+                    else
+                    {
+                        stack.Pop();
                     }
                 }
                 else
@@ -186,13 +193,17 @@ namespace Parsers.TopDown
                         var node = new SyntaxNode() { Value = top };
                         parent.Children.Add(node);
 
+
                         if (!DfsStack(ref input, ns, node, terms, nonterms))
                         {
                             return false;
                         }
                     }
                     else
+                    {
+                        Console.WriteLine($"Not Expanding not entry found for {top} {input[0]}");
                         return false;
+                    }
                 }
             }
             return true;
