@@ -14,22 +14,18 @@ namespace Parsers.TopDown
         }
 
         public ProductionTable Table { get; init; }
+        public SyntaxTree Tree { get; private set; }
 
         public Production?[,] ParseTable { get; private set; }
 
         public bool CreateParseTable()
         {
 
-            var terminal = Table.Terminals
-            .Where(x => x != Symbols.EPSILON.Value)
-            .Select((v, i) => (v, i))
-            .ToDictionary(p => p.v, k => k.i);
+            var terminal = Terminals;
 
             int y = terminal.Count;
 
-            var nonTerminal = Table.NonTerminals
-            .Select((v, i) => (v, i))
-            .ToDictionary(p => p.v, k => k.i);
+            var nonTerminal = NonTerminals;
 
             int x = nonTerminal.Count;
 
@@ -72,16 +68,11 @@ namespace Parsers.TopDown
 
         public void PrintParseTable(int padd = 20)
         {
-            var terminal = Table.Terminals
-            .Where(x => x != Symbols.EPSILON.Value)
-            .Select((v, i) => (v, i))
-            .ToDictionary(p => p.v, k => k.i);
+            var terminal = Terminals;
 
             int y = terminal.Count;
 
-            var nonTerminal = Table.NonTerminals
-            .Select((v, i) => (v, i))
-            .ToDictionary(p => p.v, k => k.i);
+            var nonTerminal = NonTerminals;
 
             int x = nonTerminal.Count;
 
@@ -115,67 +106,96 @@ namespace Parsers.TopDown
             }
 
         }
+        private Dictionary<string, int> Terminals => Table.Terminals
+           .Where(x => x != Symbols.EPSILON.Value)
+           .Select((v, i) => (v, i))
+           .ToDictionary(p => p.v, k => k.i);
+
+        private Dictionary<string, int> NonTerminals => Table.NonTerminals
+            .Select((v, i) => (v, i))
+            .ToDictionary(p => p.v, k => k.i);
+
 
         public bool StackImpl(string input)
         {
             input += Symbols.DOLLAR.Value;
 
-            var terminal = Table.Terminals
-           .Where(x => x != Symbols.EPSILON.Value)
-           .Select((v, i) => (v, i))
-           .ToDictionary(p => p.v, k => k.i);
+            var terminal = Terminals;
 
-            int y = terminal.Count;
-
-            var nonTerminal = Table.NonTerminals
-            .Select((v, i) => (v, i))
-            .ToDictionary(p => p.v, k => k.i);
+            var nonTerminal = NonTerminals;
 
             int x = nonTerminal.Count;
-
             Stack<Symbol> stack = new();
             stack.Push(Symbols.DOLLAR);
             stack.Push(Table.StartSymbol);
 
+            SyntaxTree tree = new();
+
+            var root = new SyntaxNode() { Value = stack.Peek() };
+            tree.Root = root;
+
+            if (!DfsStack(ref input, stack, root, terminal, nonTerminal))
+                return false;
+
+            if (input.Length == 0)
+            {
+                Tree = tree;
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool DfsStack(ref string input, Stack<Symbol> stack, SyntaxNode parent, Dictionary<string, int> terms, Dictionary<string, int> nonterms)
+        {
             while (stack.Count > 0 && input.Length > 0)
             {
-                var st = stack.Peek();
-                if (st.Type == SymbolType.Terminal)
+                var top = stack.Peek();
+                if (top.Type == SymbolType.Terminal)
                 {
-                    if (st == Symbols.EPSILON)
-                        stack.Pop();
-
-                    else if (input[0].ToString() == st.Value)
+                    if (top != Symbols.EPSILON)
                     {
-                        Console.WriteLine($"Matched {st}=={input[0]}");
-                        stack.Pop();
-                        input = input[1..];
-                    }
-                    else
-                        return false;
-                }
-                else if (st.Type == SymbolType.NonTerminal||st.Type==SymbolType.Start)
-                {
-                    stack.Pop();
-                    int j = terminal[input[0].ToString()];
-                    int i = nonTerminal[st.Value];
+                        if (top.Value == input[0].ToString())
+                        {
+                            var node = new SyntaxNode() { Value = top };
+                            parent.Children.Add(node);
+                            Console.WriteLine($"Matched {top.Value}=={input[0]}");
+                            stack.Pop();
+                            input = input[1..];
 
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    int j = terms[input[0].ToString()];
+                    int i = nonterms[top.Value];
                     if (ParseTable[i, j] != null)
                     {
+                        stack.Pop();
+
                         var nss = new List<Symbol>(ParseTable[i, j].Value.Right);
                         Console.WriteLine($"Expanding {ParseTable[i, j]}");
                         nss.Reverse();
-                        nss.ForEach(v => stack.Push(v));
+                        var ns = new Stack<Symbol>();
+                        nss.ForEach(v => ns.Push(v));
+                        var node = new SyntaxNode() { Value = top };
+                        parent.Children.Add(node);
+
+                        if (!DfsStack(ref input, ns, node, terms, nonterms))
+                        {
+                            return false;
+                        }
                     }
                     else
-                    {
                         return false;
-                    }
-
                 }
-
             }
-            return input.Length == 0 && input.Length == 0;
+            return true;
         }
 
     }
