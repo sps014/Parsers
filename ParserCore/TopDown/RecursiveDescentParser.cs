@@ -25,11 +25,6 @@ namespace Parsers.TopDown
         }
 
     }
-    public class SyntaxNode
-    {
-        public Symbol Value { get; init; }
-        public List<SyntaxNode> Children { get; set; } = new();
-    }
     public class SyntaxTree
     {
         public SyntaxNode Root { get; private set; }
@@ -40,13 +35,13 @@ namespace Parsers.TopDown
             this.input = input;
             this.table = table;
             int pos = 0;
-            Match(table.StartSymbol, new SyntaxNode() { Value =table.StartSymbol }, ref pos);
+            Match(table.StartSymbol, new SyntaxNode() { Value = table.StartSymbol }, ref pos);
 
         }
         public void Print(SyntaxNode node, int sp = 4)
         {
             node ??= Root;
-            Console.WriteLine("".PadRight(sp,'-')+node.Value.Value);
+            Console.WriteLine("".PadRight(sp, '-') + node.Value.Value);
             foreach (var v in node.Children)
             {
                 Print(v, sp + 4);

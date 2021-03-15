@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 
 namespace Parsers.Grammar
 {
@@ -46,6 +47,7 @@ namespace Parsers.Grammar
                     throw new System.Exception("Start Symbol must be non terminal.");
                 else
                     StartSymbol = startSymbol.Value;
+
             }
 
             AddRange(prods);
@@ -63,6 +65,8 @@ namespace Parsers.Grammar
             //Add production
             if (!productions.ContainsKey(p.Left))
                 productions.Add(p.Left, new List<Production>());
+
+            NonTerminals.Add(p.Left);
 
             foreach (var (pd, i) in p.Right.Select((v, i) => (v, i)))
             {

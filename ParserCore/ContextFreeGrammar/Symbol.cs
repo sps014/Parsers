@@ -7,7 +7,7 @@ namespace Parsers.Grammar
     /// <summary>
     /// Represent a symbol in BNF
     /// </summary>
-    public readonly struct Symbol : IEqualityComparer<Symbol>
+    public readonly struct Symbol : IEqualityComparer<Symbol>, IEquatable<Symbol>
     {
         /// <summary>
         /// Symbol Value ie a , A ,Expr
@@ -42,6 +42,19 @@ namespace Parsers.Grammar
         {
             return HashCode.Combine(obj.Value.GetHashCode(), obj.Type.GetHashCode());
         }
+        public static bool operator !=(Symbol obj1, Symbol obj2)
+        {
+            return !obj1.Equals(obj2);
+        }
+        public static bool operator ==(Symbol obj1, Symbol obj2)
+        {
+            return obj1.Equals(obj2);
+        }
+
+        public bool Equals(Symbol other)
+        {
+            return Equals(this, other);
+        }
     }
 
     /// <summary>
@@ -56,6 +69,7 @@ namespace Parsers.Grammar
         public static Symbol DOLLAR { get; } = new("$");
 
     }
+    [Flags]
     public enum SymbolType
     {
         Default,

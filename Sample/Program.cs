@@ -31,15 +31,11 @@ ProductionTable table = new();
 // table.Add(production2);
 
 
-var input = @"S->(L)
-S->a
-L->SK
-K->,SK
-K->ε";
-/*
-    first(D)= first(E)  {if first(E) is esp then first(F)}
-    first(D)={first(E)- esp} U {first(F)} 
-*/
+var input = @"S->AA
+A->aA
+A->b";
+//K->ε
+
 
 foreach (var v in input.Split("\n"))
 {
@@ -71,9 +67,11 @@ foreach (var values in table)
     }
 }
 
-table.StartSymbol = new("S", SymbolType.Start);
+table.StartSymbol = new("S", SymbolType.Start | SymbolType.NonTerminal);
 
 LL1 lL1 = new(table);
 var vvv = lL1.CreateParseTable();
+lL1.PrintParseTable();
+Write(lL1.StackImpl("abab"));
 //var vv = lL1.Follow(new("B", SymbolType.NonTerminal));
-WriteLine(Symbols.EPSILON);
+WriteLine();
