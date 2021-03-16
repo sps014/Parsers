@@ -5,7 +5,7 @@ using Parsers.TopDown;
 using System;
 
 
-var input = @"Exp= ( Abc )
+var input = @"Exp= ( Abc ) | esp | id | j
 Abc= id";
 //K->ε
 
