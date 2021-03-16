@@ -17,7 +17,7 @@ namespace Parsers.Grammar
             foreach (var pd in productionsString)
             {
 
-                var parts = pd.Split("=").Where(p => !string.IsNullOrWhiteSpace(p)).ToArray();
+                var parts = pd.Split(":=").Where(p => !string.IsNullOrWhiteSpace(p)).ToArray();
                 if (parts.Length != 2)
                 {
                     throw new System.Exception($"Invalid production {pd}");
@@ -58,6 +58,16 @@ namespace Parsers.Grammar
             }
 
             return grammar;
+        }
+        public static List<Symbol> BuildTerminals(string input)
+        {
+            var lst = new List<Symbol>();
+            foreach (var v in input.Split(" "))
+            {
+                if (!string.IsNullOrWhiteSpace(v))
+                    lst.Add(new(v));
+            }
+            return lst;
         }
     }
 }

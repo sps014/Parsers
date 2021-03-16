@@ -5,8 +5,8 @@ using Parsers.TopDown;
 using System;
 
 
-var input = @"Exp= ( Abc ) | id | j
-Abc= id";
+var input = @"Exp:= int + Exp2 | int
+Exp2:=int * Exp | int";
 //K->ε
 
 
@@ -20,7 +20,7 @@ LL1 lL1 = new(grammer);
 if (lL1.CreateParseTable())
 {
     lL1.PrintParseTable();
-    if (lL1.StackImpl(new List<Symbol> { new Symbol("("), new Symbol("id"), new Symbol(")") }))
+    if (lL1.StackImpl(GrammerBuilder.BuildTerminals("int + int * int")))
     {
         lL1.Tree.Print();
     }

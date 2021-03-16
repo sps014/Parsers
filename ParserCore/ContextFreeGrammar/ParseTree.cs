@@ -27,7 +27,7 @@ namespace Parsers.Grammar
             int g = 0;
             foreach (var c in current.Children)
             {
-                if (g == current.Children.Count-1)
+                if (g == current.Children.Count - 1)
                     DfsPrint(c, parent, sp, true);
                 else
                     DfsPrint(c, parent, sp);
