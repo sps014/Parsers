@@ -8,12 +8,12 @@ namespace Parsers.TopDown
 {
     public class LL1
     {
-        public LL1([NotNull] CFGrammer table)
+        public LL1([NotNull] CFGrammar table)
         {
             Table = table;
         }
 
-        public CFGrammer Table { get; init; }
+        public CFGrammar Table { get; init; }
         public SyntaxTree Tree { get; private set; }
 
         public Production?[,] ParseTable { get; private set; }
@@ -162,7 +162,7 @@ namespace Parsers.TopDown
                         if (top.Value == input[0].ToString())
                         {
                             var node = new SyntaxNode() { Value = top };
-                            if (top != Symbols.DOLLAR)
+                            if (top != Symbols.EPSILON)
                                 parent.Children.Add(node);
                             Console.WriteLine($"Matched {top.Value}=={input[0]}");
                             stack.Pop();

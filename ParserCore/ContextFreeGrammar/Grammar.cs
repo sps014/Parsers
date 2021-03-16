@@ -10,7 +10,7 @@ namespace Parsers.Grammar
     /// <summary>
     /// Utility class to maintain production lists for calculation of 1st and follow
     /// </summary>
-    public class CFGrammer : IEnumerable<List<Production>>
+    public class CFGrammar : IEnumerable<List<Production>>
     {
         /// <summary>
         /// Maintains map of All productions associated with non terminal
@@ -31,7 +31,7 @@ namespace Parsers.Grammar
         /// </summary>
         /// <param name="prods">a production list</param>
         /// <param name="startSymbol">start non terminal</param>
-        public CFGrammer(List<Production> prods = null, Symbol? startSymbol = null)
+        public CFGrammar(List<Production> prods = null, Symbol? startSymbol = null)
         {
             if (prods == null)
                 return;
@@ -45,7 +45,7 @@ namespace Parsers.Grammar
 
             }
 
-            AddRange(prods);
+            AddRules(prods);
 
         }
         /// <summary>
@@ -82,7 +82,7 @@ namespace Parsers.Grammar
 
             productions[p.Left].Add(p);
         }
-        public void AddRange([NotNull] List<Production> prods) =>
+        public void AddRules([NotNull] List<Production> prods) =>
             prods.ForEach(v => AddRule(v));
         public bool Contains([NotNull] string nonTerminalSymbol) =>
             productions.ContainsKey(nonTerminalSymbol);
