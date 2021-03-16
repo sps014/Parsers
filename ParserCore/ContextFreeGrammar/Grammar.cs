@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -86,6 +87,20 @@ namespace Parsers.Grammar
             prods.ForEach(v => AddRule(v));
         public bool Contains([NotNull] string nonTerminalSymbol) =>
             productions.ContainsKey(nonTerminalSymbol);
+
+        /// <summary>
+        /// Print Contained Productions
+        /// </summary>
+        public void PrintProductions()
+        {
+            foreach (var values in this)
+            {
+                foreach (var prod in values)
+                {
+                    Console.WriteLine(prod);
+                }
+            }
+        }
 
         /// <summary>
         /// calculate first for a symbol

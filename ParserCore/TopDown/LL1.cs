@@ -162,7 +162,7 @@ namespace Parsers.TopDown
                         if (top.Value == input[0].ToString())
                         {
                             var node = new SyntaxNode() { Value = top };
-                            if (top != Symbols.EPSILON)
+                            if (top != Symbols.DOLLAR)
                                 parent.Children.Add(node);
                             Console.WriteLine($"Matched {top.Value}=={input[0]}");
                             stack.Pop();
