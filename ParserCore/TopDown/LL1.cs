@@ -40,7 +40,7 @@ namespace Parsers.TopDown
                     {
                         int i = nonTerminal[sym];
                         int j = 0;
-                        if (t.Value == Symbols.EPSILON.Value)
+                        if (t == Symbols.EPSILON)
                         {
                             foreach (var tt in Table.Follow(new(sym, SymbolType.NonTerminal)))
                             {
