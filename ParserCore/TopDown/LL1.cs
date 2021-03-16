@@ -128,7 +128,6 @@ namespace Parsers.TopDown
 
             var nonTerminal = NonTerminals;
 
-            int x = nonTerminal.Count;
             Stack<Symbol> stack = new();
             stack.Push(Symbols.DOLLAR);
             stack.Push(Table.StartSymbol);

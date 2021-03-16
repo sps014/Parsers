@@ -14,16 +14,24 @@ namespace Parsers.Grammar
 
         public void Print()
         {
-            DfsPrint(Root);
+            DfsPrint(Root, 0, 4);
         }
-        void DfsPrint(SyntaxNode current, int sp = 0)
+        void DfsPrint(SyntaxNode current, int parent = 0, int sp = 0, bool isLast = false)
         {
             if (current is null)
                 return;
-            Console.WriteLine(current.Value.ToString().PadLeft(sp, '-'));
+            char cb = isLast ? '┕' : '┟';
+            Console.WriteLine("".PadRight(parent) + cb + current.Value.ToString().PadLeft(sp, '⎯'));
+            parent = sp;
+            sp += 4;
+            int g = 0;
             foreach (var c in current.Children)
             {
-                DfsPrint(c, sp + 4);
+                if (g == current.Children.Count-1)
+                    DfsPrint(c, parent, sp, true);
+                else
+                    DfsPrint(c, parent, sp);
+
             }
         }
     }

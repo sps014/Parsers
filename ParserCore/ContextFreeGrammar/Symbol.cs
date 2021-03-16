@@ -37,6 +37,10 @@ namespace Parsers.Grammar
         {
             return x.Value == y.Value && y.Type == x.Type;
         }
+        public override int GetHashCode()
+        {
+            return GetHashCode(this);
+        }
 
         public int GetHashCode([DisallowNull] Symbol obj)
         {
@@ -54,6 +58,12 @@ namespace Parsers.Grammar
         public bool Equals(Symbol other)
         {
             return Equals(this, other);
+        }
+        public override bool Equals(Object other)
+        {
+            if (other.GetType() == this.GetType())
+                return Equals(this, other);
+            return false;
         }
     }
 
