@@ -20,7 +20,7 @@ namespace Parsers.Grammar
         {
             if (current is null)
                 return;
-            System.Console.WriteLine(current.Value.ToString().PadLeft(sp, '-'));
+            Console.WriteLine(current.Value.ToString().PadLeft(sp, '-'));
             foreach (var c in current.Children)
             {
                 DfsPrint(c, sp + 4);

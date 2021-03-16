@@ -10,7 +10,7 @@ namespace Parsers.Grammar
     /// <summary>
     /// Utility class to maintain production lists for calculation of 1st and follow
     /// </summary>
-    public class ProductionTable : IEnumerable<List<Production>>
+    public class CFGrammer : IEnumerable<List<Production>>
     {
         /// <summary>
         /// Maintains map of All productions associated with non terminal
@@ -18,12 +18,7 @@ namespace Parsers.Grammar
         private readonly Dictionary<string, List<Production>> productions = new();
 
         /// <summary>
-        /// Inverse Map from Production to symbol
-        /// </summary>
-        private readonly Dictionary<string, string> inverseProductions = new();
-
-        /// <summary>
-        /// Maintains the index and production where a non terminal appeared
+        /// Maintains the index and production where a non terminal appeared (used for follow calculation)
         /// </summary>
         private readonly Dictionary<string, List<(int Index, Production Production)>> nonTerminalPointers = new();
         /// <summary>
@@ -36,7 +31,7 @@ namespace Parsers.Grammar
         /// </summary>
         /// <param name="prods">a production list</param>
         /// <param name="startSymbol">start non terminal</param>
-        public ProductionTable(List<Production> prods = null, Symbol? startSymbol = null)
+        public CFGrammer(List<Production> prods = null, Symbol? startSymbol = null)
         {
             if (prods == null)
                 return;
@@ -57,10 +52,8 @@ namespace Parsers.Grammar
         /// Add a  production
         /// </summary>
         /// <param name="p">a production </param>
-        public void Add([NotNull] Production p)
+        public void AddRule([NotNull] Production p)
         {
-            //maintain inverse list
-            inverseProductions.TryAdd(p.RightAsString, p.Left);
 
             //Add production
             if (!productions.ContainsKey(p.Left))
@@ -90,12 +83,9 @@ namespace Parsers.Grammar
             productions[p.Left].Add(p);
         }
         public void AddRange([NotNull] List<Production> prods) =>
-            prods.ForEach(v => Add(v));
+            prods.ForEach(v => AddRule(v));
         public bool Contains([NotNull] string nonTerminalSymbol) =>
             productions.ContainsKey(nonTerminalSymbol);
-
-        public bool ContainsProduction([NotNull] string production) =>
-            inverseProductions.ContainsKey(production);
 
         /// <summary>
         /// calculate first for a symbol
@@ -229,13 +219,6 @@ namespace Parsers.Grammar
             return res;
         }
 
-        /// <summary>
-        /// Find LHS symbol from a Production 
-        /// </summary>
-        /// <param name="production">Production as string</param>
-        /// <returns>return LHS symbol string</returns>
-        public string InverseLookup([NotNull] string production) =>
-            ContainsProduction(production) ? inverseProductions[production] : null;
 
         public IEnumerator<List<Production>> GetEnumerator() =>
             productions.Values.GetEnumerator();

@@ -4,31 +4,7 @@ using System.Collections.Generic;
 using Parsers.TopDown;
 using System;
 
-ProductionTable table = new();
-
-
-// Production production = new("A");
-
-// production.Right = new()
-// {
-//     new TerminalSymbol("id^"),
-//     new NonTerminalSymbol("B"),
-//     new TerminalSymbol("+"),
-//     TerminalSymbol.EPSILON
-// };
-
-// table.Add(production);
-
-// Production production2 = new("B");
-// production2.Right = new()
-// {
-//     new TerminalSymbol("m"),
-//     new NonTerminalSymbol("X"),
-//     new TerminalSymbol("+"),
-//     new TerminalSymbol("c")
-// };
-
-// table.Add(production2);
+CFGrammer grammer = new();
 
 
 var input = @"E->TG
@@ -61,10 +37,10 @@ foreach (var v in input.Split("\n"))
             production1.Right.Add(new Symbol(s.ToString()));
         }
     }
-    table.Add(production1);
+    grammer.AddRule(production1);
 }
 
-foreach (var values in table)
+foreach (var values in grammer)
 {
     foreach (var prod in values)
     {
@@ -72,13 +48,13 @@ foreach (var values in table)
     }
 }
 
-table.StartSymbol = new("E", SymbolType.Start | SymbolType.NonTerminal);
+grammer.StartSymbol = new("E", SymbolType.Start | SymbolType.NonTerminal);
 
-LL1 lL1 = new(table);
+LL1 lL1 = new(grammer);
 if (lL1.CreateParseTable())
 {
     lL1.PrintParseTable();
-    if(lL1.StackImpl("i+i"))
+    if (lL1.StackImpl(new List<Symbol> { new Symbol("i"), new Symbol("+"), new Symbol("i") }))
     {
         lL1.Tree.Print();
     }

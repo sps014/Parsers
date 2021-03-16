@@ -8,12 +8,12 @@ namespace Parsers.TopDown
 {
     public class LL1
     {
-        public LL1([NotNull] ProductionTable table)
+        public LL1([NotNull] CFGrammer table)
         {
             Table = table;
         }
 
-        public ProductionTable Table { get; init; }
+        public CFGrammer Table { get; init; }
         public SyntaxTree Tree { get; private set; }
 
         public Production?[,] ParseTable { get; private set; }
@@ -116,11 +116,13 @@ namespace Parsers.TopDown
             .ToDictionary(p => p.v, k => k.i);
 
 
-        public bool StackImpl(string input)
+        public bool StackImpl(IReadOnlyList<Symbol> inputs)
         {
             Console.WriteLine();
-
-            input += Symbols.DOLLAR.Value;
+            var input = new List<Symbol>(inputs)
+            {
+                Symbols.DOLLAR
+            };
 
             var terminal = Terminals;
 
@@ -139,7 +141,7 @@ namespace Parsers.TopDown
             if (!DfsStack(ref input, stack, root, terminal, nonTerminal))
                 return false;
 
-            if (input.Length == 0)
+            if (input.Count == 0)
             {
                 Tree = tree;
                 return true;
@@ -148,9 +150,9 @@ namespace Parsers.TopDown
             return false;
         }
 
-        private bool DfsStack(ref string input, Stack<Symbol> stack, SyntaxNode parent, Dictionary<string, int> terms, Dictionary<string, int> nonterms)
+        private bool DfsStack(ref List<Symbol> input, Stack<Symbol> stack, SyntaxNode parent, Dictionary<string, int> terms, Dictionary<string, int> nonterms)
         {
-            while (stack.Count > 0 && input.Length > 0)
+            while (stack.Count > 0 && input.Count > 0)
             {
                 var top = stack.Peek();
                 if (top.Type == SymbolType.Terminal)
@@ -164,7 +166,7 @@ namespace Parsers.TopDown
                                 parent.Children.Add(node);
                             Console.WriteLine($"Matched {top.Value}=={input[0]}");
                             stack.Pop();
-                            input = input[1..];
+                            input.RemoveAt(0);
 
                         }
                         else
@@ -175,6 +177,7 @@ namespace Parsers.TopDown
                     }
                     else
                     {
+                        Console.WriteLine($"Consumed {Symbols.EPSILON}");
                         stack.Pop();
                     }
                 }
