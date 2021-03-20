@@ -5,7 +5,7 @@ namespace Parsers.Grammar
 {
     public static class GrammerBuilder
     {
-        public static CFGrammar Build(string input)
+        public static CFGrammar Build(string input,string lrSeparactor=":=",string symbolSeparator=" ")
         {
             CFGrammar grammar = new();
             var productionsString = input.Split("\r\n").Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
@@ -17,7 +17,7 @@ namespace Parsers.Grammar
             foreach (var pd in productionsString)
             {
 
-                var parts = pd.Split(":=").Where(p => !string.IsNullOrWhiteSpace(p)).ToArray();
+                var parts = pd.Split(lrSeparactor).Where(p => !string.IsNullOrWhiteSpace(p)).ToArray();
                 if (parts.Length != 2)
                 {
                     throw new System.Exception($"Invalid production {pd}");
@@ -34,7 +34,7 @@ namespace Parsers.Grammar
                 foreach (var p1 in parts[1].Split('|'))
                 {
                     List<Symbol> right = new();
-                    foreach (var s in p1.Split(" ").Where(x => !string.IsNullOrWhiteSpace(x)))
+                    foreach (var s in p1.Split(symbolSeparator).Where(x => !string.IsNullOrWhiteSpace(x)))
                     {
                         SymbolType type = SymbolType.Terminal;
 
@@ -59,10 +59,10 @@ namespace Parsers.Grammar
 
             return grammar;
         }
-        public static List<Symbol> BuildTerminals(string input)
+        public static List<Symbol> BuildTerminals(string input,string seperator=" ")
         {
             var lst = new List<Symbol>();
-            foreach (var v in input.Split(" "))
+            foreach (var v in input.Split(seperator))
             {
                 if (!string.IsNullOrWhiteSpace(v))
                     lst.Add(new(v));
