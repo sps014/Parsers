@@ -12,6 +12,7 @@ using Parsers.TopDown;
 using System;
 
 
+//input productions
 var input = @"Exp:= int + Exp2 | esp
 Exp2:=int * Exp | esp";
 
