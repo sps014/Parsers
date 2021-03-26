@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Parsers.Grammar
 {
-    public static class GrammerBuilder
+    public static class GrammarBuilder
     {
         public static CFGrammar Build(string input,string lrSeparactor=":=",string symbolSeparator=" ")
         {
