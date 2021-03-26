@@ -11,18 +11,18 @@ using Parsers.TopDown;
 using System;
 
 
-var input = @"Exp:= int + Exp2 | int
-Exp2:=int * Exp | int";
+var input = @"Exp:= int + Exp2 | esp
+Exp2:=int * Exp | esp";
 
 
 //create grammar from string
-var grammer = GrammerBuilder.Build(input);
+var grammar = GrammerBuilder.Build(input);
 
 //display productions
-grammer.PrintProductions();
+grammar.PrintProductions();
 
 //initialize LL1 parser
-LL1 lL1 = new(grammer);
+LL1 lL1 = new(grammar);
 
 //if we can create parse table
 if (lL1.CreateParseTable())
