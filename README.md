@@ -29,7 +29,7 @@ if (lL1.CreateParseTable())
 {
      // print table
     lL1.PrintParseTable();
-    //stack implement for fiven input
+    //stack implement for given input
     if (lL1.StackImpl(GrammerBuilder.BuildTerminals("int + int * int")))
     {
         // print syntax tree
