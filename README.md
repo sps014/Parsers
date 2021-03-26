@@ -1,6 +1,6 @@
 # Parsers
  
-A parse tree generator.
+A parse tree generator.\
 CFG should be Left Recusion free and no left factoring should be there at all.
 
 ```cs
@@ -17,7 +17,7 @@ Exp2:=int * Exp | esp";
 
 
 //create grammar from string
-var grammar = GrammerBuilder.Build(input);
+var grammar = GrammarBuilder.Build(input);
 
 //display productions
 grammar.PrintProductions();
@@ -31,7 +31,7 @@ if (lL1.CreateParseTable())
      // print table
     lL1.PrintParseTable();
     //stack implement for given input
-    if (lL1.StackImpl(GrammerBuilder.BuildTerminals("int + int * int")))
+    if (lL1.StackImpl(GrammarBuilder.BuildTerminals("int + int * int")))
     {
         // print syntax tree
         lL1.Tree.Print();
