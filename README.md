@@ -1,6 +1,7 @@
 # Parsers
  
 A parse tree generator.
+CFG should be Left Recusion free and no left factoring should be there at all.
 
 ```cs
 
