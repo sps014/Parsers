@@ -5,7 +5,7 @@ using Parsers.TopDown;
 using System;
 
 
-var input = @"Exp:= int + Exp2 | esp
+var input = @"Exp:= int | esp
 Exp2:=int * Exp | esp";
 //K->ε
 
@@ -20,7 +20,7 @@ LL1 lL1 = new(grammer);
 if (lL1.CreateParseTable())
 {
     lL1.PrintParseTable();
-    if (lL1.StackImpl(GrammarBuilder.BuildTerminals("int + int * int")))
+    if (lL1.StackImpl(GrammarBuilder.BuildTerminals("int")))
     {
         lL1.Tree.Print();
     }
