@@ -12,30 +12,30 @@ using Parsers.TopDown;
 using System;
 
 
-//input productions
-var input = @"Exp:= int + Exp2 | esp
+var input = @"Exp:= int | esp
 Exp2:=int * Exp | esp";
+//K->ε
 
 
-//create grammar from string
-var grammar = GrammarBuilder.Build(input);
+var grammer = GrammarBuilder.Build(input);
 
-//display productions
-grammar.PrintProductions();
+WriteLine("Productions are:");
+grammer.PrintProductions();
 
-//initialize LL1 parser
-LL1 lL1 = new(grammar);
-
-//if we can create parse table
+WriteLine();
+LL1 lL1 = new(grammer);
 if (lL1.CreateParseTable())
 {
-     // print table
+    WriteLine("Parse Table is :");
     lL1.PrintParseTable();
-    //stack implement for given input
-    if (lL1.StackImpl(GrammarBuilder.BuildTerminals("int + int * int")))
+    if (lL1.StackImpl(GrammarBuilder.BuildTerminals("int")))
     {
-        // print syntax tree
+        WriteLine("\nParse Tree is :");
         lL1.Tree.Print();
     }
 }
+WriteLine();
 ```
+
+#### Output
+![output](https://user-images.githubusercontent.com/45932883/117781074-db8bb180-b25d-11eb-8c6b-b47e1d9726a5.png)
