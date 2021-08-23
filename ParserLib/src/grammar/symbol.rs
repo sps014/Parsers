@@ -1,6 +1,6 @@
 use super::symbol_type::*;
 
-#[derive( Clone, PartialEq,Debug)]
+#[derive( Clone,PartialEq,Eq,Debug)]
 pub struct Symbol
 {
     pub value:String,
