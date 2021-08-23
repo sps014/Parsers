@@ -1,7 +1,1 @@
-pub mod test
-{
-    pub fn call()
-    {
-        print!("ok");
-    }
-}
+pub mod grammar;

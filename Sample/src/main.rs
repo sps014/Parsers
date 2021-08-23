@@ -1,5 +1,6 @@
 extern  crate ParserLib;
 
 fn main() {
-    ParserLib::test::call();
+    let c=ParserLib::grammar::symbol::Symbol::terminal_with("ok".to_string());
+    println!("{:?}",c);
 }
