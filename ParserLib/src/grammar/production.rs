@@ -19,9 +19,9 @@ impl Production
     pub fn print(&self)
     {
         print!("{} ->",self.left.value);
-        for i in self.right
+        for i in self.right.iter()
         {
-            print!(" {}",i.value);
+            print!(" {}", i.value);
         }
         print!("\n");
     }

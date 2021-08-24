@@ -20,4 +20,8 @@ impl Symbol
     {
         Symbol{value,kind:SymbolType::NonTerminal }
     }
+    pub fn print(&self)
+    {
+        println!("{}",self.value);
+    }
 }
