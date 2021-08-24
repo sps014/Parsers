@@ -1,4 +1,4 @@
-#[derive(Clone,Debug,Eq,PartialEq)]
+#[derive(Clone,Debug,Eq,PartialEq,Hash)]
 pub enum SymbolType
 {
     Terminal,

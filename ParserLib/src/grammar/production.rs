@@ -1,6 +1,6 @@
 use crate::grammar::symbol::Symbol;
 
-#[derive(Debug,Clone,Eq, PartialEq)]
+#[derive(Debug,Clone,Eq, PartialEq,Hash)]
 pub struct Production
 {
     pub left:Symbol,
