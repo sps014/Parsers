@@ -2,6 +2,7 @@ use crate::grammar::symbol::Symbol;
 use std::collections::{HashMap, HashSet};
 use std::iter::FromIterator;
 use crate::grammar::production::Production;
+use crate::grammar::utils::prefix_trie::PrefixTrie;
 
 #[derive(Debug)]
 pub struct CFG
@@ -40,26 +41,20 @@ impl CFG
     }
     pub fn eliminate_left_factoring(&mut self)
     {
-        for i in self.nt_map.keys().into_iter()
+        for (k,v) in self.nt_map.clone()
         {
-            //self.find_common(&i);
+            self.find_common(k.clone());
         }
     }
-    fn find_common(&mut self,symbol:&Symbol)->Vec<Symbol>
+    fn find_common(&mut self,symbol:Symbol)->Vec<Symbol>
     {
         //let mut common=Vec::new();
-        let mut c=0;
-
-        for i in self.nt_map.get(symbol).unwrap().iter()
+        let mut pt=PrefixTrie::new();
+        for i in self.nt_map.get(&symbol).unwrap().iter()
         {
-            c+=1;
-
-            if(c==1)
-            {
-
-                continue;
-            }
+            pt.add_production(i.clone());
         }
+        print!("{:?}",pt);
         vec![]
     }
 }
