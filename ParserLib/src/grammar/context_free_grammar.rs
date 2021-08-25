@@ -38,4 +38,28 @@ impl CFG
         self.nt_map.get_mut(&prod.left).unwrap().insert(prod);
 
     }
+    pub fn eliminate_left_factoring(&mut self)
+    {
+        for i in self.nt_map.keys().into_iter()
+        {
+            //self.find_common(&i);
+        }
+    }
+    fn find_common(&mut self,symbol:&Symbol)->Vec<Symbol>
+    {
+        //let mut common=Vec::new();
+        let mut c=0;
+
+        for i in self.nt_map.get(symbol).unwrap().iter()
+        {
+            c+=1;
+
+            if(c==1)
+            {
+
+                continue;
+            }
+        }
+        vec![]
+    }
 }
