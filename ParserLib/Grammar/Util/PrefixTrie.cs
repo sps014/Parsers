@@ -15,6 +15,20 @@ public class PrefixTrie
                 current = current.Add(r);
             }
         }
+
+        public void Print()
+        {
+            print(Root);
+        }
+
+        private void print(TrieNode n, int space = 2)
+        {
+            foreach (var (k,v) in n.Children)
+            {
+                Console.WriteLine('|' + k.ToString().PadLeft(space, '-'));
+                print(v,space+8);
+            }
+        }
 }
 
 public class TrieNode
