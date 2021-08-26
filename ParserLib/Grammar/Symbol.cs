@@ -43,4 +43,8 @@ public readonly struct Symbol:IEquatable<Symbol>
     {
         return new(value, SymbolType.NonTerminal);
     }
+    public static Symbol Terminal(string value)
+    {
+        return new(value, SymbolType.Terminal);
+    }
 }

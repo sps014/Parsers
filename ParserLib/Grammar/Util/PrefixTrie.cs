@@ -25,7 +25,7 @@ public class PrefixTrie
         {
             foreach (var (k,v) in n.Children)
             {
-                Console.WriteLine('|' + k.ToString().PadLeft(space, '-'));
+                Console.WriteLine("".PadLeft(space)+'|' + k.ToString().PadLeft(8, '-'));
                 print(v,space+8);
             }
         }
