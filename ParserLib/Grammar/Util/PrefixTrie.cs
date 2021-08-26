@@ -23,14 +23,17 @@ public class PrefixTrie
 
         private void markNodes(TrieNode node)
         {
-            if (node.Children.Count > 1)
-            {
-                node.Active = true;
-            }
-
+            bool childTrue = false;
             foreach (var k in node.Children.Keys)
             {
                 markNodes(node.Children[k]);
+                if (node.Children[k].Active)
+                    childTrue = true;
+            }
+            
+            if (node.Children.Count > 1 || childTrue)
+            {
+                node.Active = true;
             }
             
         }
@@ -48,7 +51,7 @@ public class PrefixTrie
             foreach (var (k,v) in n.Children)
             {
                 Console.Write("└".PadLeft(space,' '));
-                Console.WriteLine(k.ToString().PadLeft(8, '─'));
+                Console.WriteLine(k.ToString()+(v.Active.ToString()).PadLeft(8, '─'));
                 print(v,space+8);
             }
         }
