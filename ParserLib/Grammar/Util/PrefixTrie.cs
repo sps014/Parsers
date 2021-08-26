@@ -51,7 +51,7 @@ public class PrefixTrie
             foreach (var (k,v) in n.Children)
             {
                 Console.Write("└".PadLeft(space,' '));
-                Console.WriteLine(k.ToString()+(v.Active.ToString()).PadLeft(8, '─'));
+                Console.WriteLine(k.ToString().PadLeft(8, '─'));
                 print(v,space+8);
             }
         }
