@@ -16,16 +16,39 @@ public class PrefixTrie
             }
         }
 
+        public void MarkNodes()
+        {
+            markNodes(Root);
+        }
+
+        private void markNodes(TrieNode node)
+        {
+            if (node.Children.Count > 1)
+            {
+                node.Active = true;
+            }
+
+            foreach (var k in node.Children.Keys)
+            {
+                markNodes(node.Children[k]);
+            }
+            
+        }
+
         public void Print()
         {
-            print(Root);
+            var nr = new TrieNode();
+            nr.Children.Add(Symbol.Terminal("Root"),Root );
+            print(nr);
         }
 
         private void print(TrieNode n, int space = 2)
         {
+            
             foreach (var (k,v) in n.Children)
             {
-                Console.WriteLine("".PadLeft(space)+'|' + k.ToString().PadLeft(8, '-'));
+                Console.Write("└".PadLeft(space,' '));
+                Console.WriteLine(k.ToString().PadLeft(8, '─'));
                 print(v,space+8);
             }
         }
@@ -33,7 +56,7 @@ public class PrefixTrie
 
 public class TrieNode
 {
-    public bool Active { get; set; } = true;
+    public bool Active { get; set; } = false;
     public Dictionary<Symbol, TrieNode> Children { get; } = new();
 
     public TrieNode Add(Symbol symbol)
