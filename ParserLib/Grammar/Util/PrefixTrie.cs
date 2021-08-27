@@ -18,15 +18,15 @@ public class PrefixTrie
 
         public void MarkNodes()
         {
-            markNodes(Root);
+            MarkNodes(Root);
         }
 
-        private void markNodes(TrieNode node)
+        private void MarkNodes(TrieNode node)
         {
             bool childTrue = false;
             foreach (var k in node.Children.Keys)
             {
-                markNodes(node.Children[k]);
+                MarkNodes(node.Children[k]);
                 if (node.Children[k].Active)
                     childTrue = true;
             }
@@ -38,21 +38,59 @@ public class PrefixTrie
             
         }
 
+        public HashSet<Production> GenerateProductions(Symbol left)
+        {
+            HashSet<Production> p = new();
+            foreach (var (k,v) in Root.Children)
+            {
+                GenerateProductions(v,k,left,new List<Symbol>(){},p);
+            }
+
+            return p;
+        }
+
+        private void GenerateProductions(TrieNode parent,Symbol current,Symbol forNonTerminal,List<Symbol> build,HashSet<Production> productions)
+        {
+            build.Add(current);
+            if (parent.Children.Count == 0)
+            {
+                Production p = new(forNonTerminal,new List<Symbol>(build));
+                productions.Add(p);
+            }
+            else if (parent.Active && parent.Children.Count >= 2)
+            {
+                Production p = new(forNonTerminal,new List<Symbol>(build));
+                productions.Add(p);
+                //build k dash
+            }
+            else
+            {
+                foreach (var (k,v) in parent.Children)
+                {
+                    GenerateProductions(v, k, forNonTerminal, build, productions);
+                }
+            }
+
+            
+
+            build.Remove(current);
+        }
+
         public void Print()
         {
             var nr = new TrieNode();
             nr.Children.Add(Symbol.Terminal("Root"),Root );
-            print(nr);
+            Print(nr);
         }
 
-        private void print(TrieNode n, int space = 2)
+        private void Print(TrieNode n, int space = 2)
         {
             
             foreach (var (k,v) in n.Children)
             {
                 Console.Write("└".PadLeft(space,' '));
                 Console.WriteLine(k.ToString().PadLeft(8, '─'));
-                print(v,space+8);
+                Print(v,space+8);
             }
         }
 }
