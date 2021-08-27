@@ -38,6 +38,14 @@ public readonly struct Symbol:IEquatable<Symbol>
     {
         Console.WriteLine(ToString());
     }
+    public static bool operator !=(Symbol lhs, Symbol rhs)
+    {
+        return !Equals(lhs, rhs);
+    }
+    public static bool operator ==(Symbol lhs, Symbol rhs)
+    {
+        return Equals(lhs, rhs);
+    }
 
     public static Symbol NonTerminal(string value)
     {

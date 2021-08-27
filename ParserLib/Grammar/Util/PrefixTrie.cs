@@ -46,15 +46,16 @@ public class PrefixTrie
         public HashSet<Production> GenerateProductions(Symbol left)
         {
             HashSet<Production> p = new();
+            int a = 0;
             foreach (var (k,v) in Root.Children)
             {
-                GenerateProductions(v,k,left,new List<Symbol>(){},p);
+                GenerateProductions(v,k,left,new List<Symbol>(){},p,ref a);
             }
 
             return p;
         }
 
-        private void GenerateProductions(TrieNode parent,Symbol current,Symbol forNonTerminal,List<Symbol> build,HashSet<Production> productions)
+        private void GenerateProductions(TrieNode parent,Symbol current,Symbol forNonTerminal,List<Symbol> build,HashSet<Production> productions,ref int count)
         {
             build.Add(current);
             if (parent.Children.Count == 0)
@@ -64,13 +65,14 @@ public class PrefixTrie
             }
             else if (parent.Active && parent.Children.Count >= 2)
             {
+                count++;
                 Production p = new(forNonTerminal,new List<Symbol>(build));
-                p.Right.Add(Dash(forNonTerminal));
+                p.Right.Add(Dash(forNonTerminal,count));
                 productions.Add(p);
                 //build k dash
                 foreach (var (k,v) in parent.Children)
                 {
-                    var arr = GeneratePDash(v, k, forNonTerminal);
+                    var arr = GeneratePDash(v, k, forNonTerminal,count);
                     foreach (var elm in arr)
                         productions.Add(elm);
                 }
@@ -80,22 +82,22 @@ public class PrefixTrie
             {
                 foreach (var (k,v) in parent.Children)
                 {
-                    GenerateProductions(v, k, forNonTerminal, build, productions);
+                    GenerateProductions(v, k, forNonTerminal, build, productions,ref count);
                 }
             }
             
             build.RemoveAt(build.Count-1);
         }
 
-        private HashSet<Production> GeneratePDash(TrieNode parent,Symbol current,Symbol forNonTerminal)
+        private HashSet<Production> GeneratePDash(TrieNode parent,Symbol current,Symbol forNonTerminal,int ct)
         {
-            Symbol left = Dash(forNonTerminal);
+            Symbol left = Dash(forNonTerminal,ct);
             HashSet<Production> pds = new();
             Visit(parent,current,left,pds,new List<Symbol>());
             return pds;
         }
 
-        public static Symbol Dash(Symbol normal)=>Symbol.NonTerminal(normal.Value + "#Dash");
+        public static Symbol Dash(Symbol normal,int ct)=>Symbol.NonTerminal(normal.Value + $"{ct}#Dash");
         
 
         public HashSet<Production> Visit(Symbol left)
@@ -103,7 +105,7 @@ public class PrefixTrie
             HashSet<Production> p = new();
             foreach (var (k,v) in Root.Children)
             {
-                GenerateProductions(v,k,left,new List<Symbol>(){},p);
+                Visit(v,k,left,p,new List<Symbol>());
             }
 
             return p;

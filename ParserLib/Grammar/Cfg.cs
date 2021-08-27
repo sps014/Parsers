@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ParserLib.Grammar.Util;
 
 namespace ParserLib.Grammar;
@@ -25,31 +26,47 @@ public class Cfg
         public void AddProduction(Production p)
         {
                 if (!_nt_map.ContainsKey(p.Left))
-                {
                         _nt_map.Add(p.Left,new());
-                }
                 _nt_map[p.Left].Add(p);
         }
 
         public void EliminateLeftFactoring()
         {
                 foreach (var k in _nt_map.Keys)
-                {
                         BuildPrefixTree(k);
-                }
         }
-        private  List<Symbol> BuildPrefixTree(Symbol symbol)
+        private  void BuildPrefixTree(Symbol symbol)
         {
-                //let mut common=Vec::new();
                 var prefixTree = new PrefixTrie();
+                
                 foreach (var v in _nt_map[symbol])
-                {
                         prefixTree.AddProduction(v);
-                }
+                
                 prefixTree.MarkNodes();
                 var productions=prefixTree.GenerateProductions(symbol);
-                
+                EraseAndAdd(productions,symbol);
                 prefixTree.Print();
-                return new List<Symbol>();
+        }
+
+        private void EraseAndAdd(HashSet<Production> p,Symbol original)
+        {
+                var left = p.Select(p => p.Left).Distinct().ToList();
+                foreach (var l in left)
+                {
+                        if(_nt_map.ContainsKey(l))
+                                _nt_map[l].Clear();
+                }
+
+                foreach (var pd in p)
+                {
+                        AddProduction(pd);
+                }
+                foreach (var l in left)
+                {
+                        if (l != original)
+                        {
+                                BuildPrefixTree(l);
+                        }
+                }
         }
 }
