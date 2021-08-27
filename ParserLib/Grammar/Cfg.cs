@@ -47,7 +47,8 @@ public class Cfg
                         prefixTree.AddProduction(v);
                 }
                 prefixTree.MarkNodes();
-                prefixTree.GenerateProductions(symbol);
+                var productions=prefixTree.GenerateProductions(symbol);
+                
                 prefixTree.Print();
                 return new List<Symbol>();
         }

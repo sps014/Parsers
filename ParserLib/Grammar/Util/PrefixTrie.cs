@@ -61,7 +61,7 @@ public class PrefixTrie
             else if (parent.Active && parent.Children.Count >= 2)
             {
                 Production p = new(forNonTerminal,new List<Symbol>(build));
-                p.Right.Add(Symbol.NonTerminal(forNonTerminal.Value + "'"));
+                p.Right.Add(Dash(forNonTerminal));
                 productions.Add(p);
                 //build k dash
                 foreach (var (k,v) in parent.Children)
@@ -85,11 +85,14 @@ public class PrefixTrie
 
         private HashSet<Production> GeneratePDash(TrieNode parent,Symbol current,Symbol forNonTerminal)
         {
-            Symbol left = Symbol.NonTerminal(forNonTerminal.Value + "'");
+            Symbol left = Dash(forNonTerminal);
             HashSet<Production> pds = new();
             Visit(parent,current,left,pds,new List<Symbol>());
             return pds;
         }
+
+        public static Symbol Dash(Symbol normal)=>Symbol.NonTerminal(normal.Value + "#Dash");
+        
 
         public HashSet<Production> Visit(Symbol left)
         {
