@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ParserLib.Grammar.Util;
 
@@ -60,9 +61,17 @@ public class PrefixTrie
             else if (parent.Active && parent.Children.Count >= 2)
             {
                 Production p = new(forNonTerminal,new List<Symbol>(build));
+                p.Right.Add(Symbol.NonTerminal(forNonTerminal.Value + "'"));
                 productions.Add(p);
                 //build k dash
+                foreach (var (k,v) in parent.Children)
+                {
+                    var arr = GeneratePDash(v, k, forNonTerminal);
+                    foreach (var elm in arr)
+                        productions.Add(elm);
+                }
             }
+            
             else
             {
                 foreach (var (k,v) in parent.Children)
@@ -70,10 +79,41 @@ public class PrefixTrie
                     GenerateProductions(v, k, forNonTerminal, build, productions);
                 }
             }
-
             
+            build.RemoveAt(build.Count-1);
+        }
 
-            build.Remove(current);
+        private HashSet<Production> GeneratePDash(TrieNode parent,Symbol current,Symbol forNonTerminal)
+        {
+            Symbol left = Symbol.NonTerminal(forNonTerminal.Value + "'");
+            HashSet<Production> pds = new();
+            Visit(parent,current,left,pds,new List<Symbol>());
+            return pds;
+        }
+
+        public HashSet<Production> Visit(Symbol left)
+        {
+            HashSet<Production> p = new();
+            foreach (var (k,v) in Root.Children)
+            {
+                GenerateProductions(v,k,left,new List<Symbol>(){},p);
+            }
+
+            return p;
+        }
+        private void Visit(TrieNode parent,Symbol current,Symbol forNonTerminal,HashSet<Production> productions,List<Symbol> build)
+        {
+            build.Add(current);
+            if (parent.Children.Count == 0)
+            {
+                Production p = new(forNonTerminal,new List<Symbol>(build));
+                productions.Add(p);
+            }
+            foreach (var (k,v) in parent.Children)
+            {
+                Visit(v, k, forNonTerminal, productions, build);
+            }
+            build.RemoveAt(build.Count-1);
         }
 
         public void Print()
