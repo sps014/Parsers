@@ -38,7 +38,11 @@ public class PrefixTrie
             }
             
         }
-
+        /// <summary>
+        /// Visits Trie and gets all Productions including P' after elimination
+        /// </summary>
+        /// <param name="left">symbol whose main productions are derived</param>
+        /// <returns>returns prodictions </returns>
         public HashSet<Production> GenerateProductions(Symbol left)
         {
             HashSet<Production> p = new();
