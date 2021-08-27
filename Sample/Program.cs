@@ -44,3 +44,4 @@ cfg.AddProduction(p3);
 cfg.AddProduction(p4);
 
 cfg.EliminateLeftFactoring();
+cfg.Print();

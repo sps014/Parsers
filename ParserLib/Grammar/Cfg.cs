@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using ParserLib.Grammar.Util;
 
 namespace ParserLib.Grammar;
@@ -32,7 +33,8 @@ public class Cfg
 
         public void EliminateLeftFactoring()
         {
-                foreach (var k in _nt_map.Keys)
+                var keys=_nt_map.Keys.ToList();
+                foreach (var k in keys)
                         BuildPrefixTree(k);
         }
         private  void BuildPrefixTree(Symbol symbol)
@@ -45,7 +47,7 @@ public class Cfg
                 prefixTree.MarkNodes();
                 var productions=prefixTree.GenerateProductions(symbol);
                 EraseAndAdd(productions,symbol);
-                prefixTree.Print();
+                //prefixTree.Print();
         }
 
         private void EraseAndAdd(HashSet<Production> p,Symbol original)
@@ -69,4 +71,16 @@ public class Cfg
                         }
                 }
         }
+
+    public void Print()
+    {
+        Console.WriteLine(ToString());
+    }
+    public override string ToString()
+    {
+        StringBuilder sb=new StringBuilder("");
+        foreach(var v in _nt_map.Values)
+            sb.Append(string.Join(" | ",v.Select(x=>x.ToString()))+"\n");
+        return sb.ToString();
+    }
 }
