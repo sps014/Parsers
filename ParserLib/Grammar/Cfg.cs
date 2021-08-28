@@ -73,7 +73,12 @@ public class Cfg
     }
     public void EliminateLeftRecursion()
     {
+        var keys= _nt_map.Keys.ToList();
+        foreach (var k in keys)
+        {
+            var prods=_nt_map[k];
 
+        }
     }
     public void Print()
     {

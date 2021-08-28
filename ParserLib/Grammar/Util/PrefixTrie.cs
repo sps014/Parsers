@@ -97,7 +97,7 @@ public class PrefixTrie
             return pds;
         }
 
-        public static Symbol Dash(Symbol normal,int ct)=>Symbol.NonTerminal(normal.Value + $"{ct}#Dash");
+        public static Symbol Dash(Symbol normal,int ct)=>Symbol.NonTerminal(normal.Value + $"_{ct}_Dash");
         
 
         public HashSet<Production> Visit(Symbol left)
