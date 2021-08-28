@@ -73,6 +73,7 @@ public class Cfg
     }
     public void EliminateLeftRecursion()
     {
+        throw new NotImplementedException();
         var keys= _nt_map.Keys.ToList();
         foreach (var k in keys)
         {
