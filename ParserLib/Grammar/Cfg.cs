@@ -90,6 +90,9 @@ public class Cfg
         var left = Symbol.NonTerminal(RecursiveName(l));
         for (var i=0;i<nonRecursive.Count;i++)
         {
+            if (nonRecursive[i].Right[0] == Symbols.EPSILON)
+                nonRecursive[i].Right.RemoveAt(0);
+
             nonRecursive[i].Right.Add(left);
         }
         for (var i = 0; i < recursiveList.Count; i++)
