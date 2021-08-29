@@ -44,4 +44,27 @@ cfg.AddProduction(p3);
 cfg.AddProduction(p4);
 
 cfg.EliminateLeftFactoring();
+//cfg.Print();
+
+cfg = new Cfg();
+
+p = new Production(nt,
+    new()
+    {
+        nt,
+        new Symbol("b")
+    }
+);
+p1 = new Production(nt,
+    new()
+    {
+        new Symbol("a"),
+        nt,
+        new Symbol("c")
+    }
+);
+cfg.AddProduction(p1);
+cfg.AddProduction(p);
+cfg.Print();
+cfg.EliminateLeftRecursion();
 cfg.Print();

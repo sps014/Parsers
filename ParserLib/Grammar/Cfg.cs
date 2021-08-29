@@ -85,13 +85,37 @@ public class Cfg
     }
     private void SolveRecursion(Symbol l)
     {
-        throw new NotImplementedException();
+        var recursiveList = _nt_map[l].Where(x => IsRecursiveProduction(x)).ToList();
+        var nonRecursive= _nt_map[l].Where(x => !IsRecursiveProduction(x)).ToList();
+        var left = Symbol.NonTerminal(RecursiveName(l));
+        for (var i=0;i<nonRecursive.Count;i++)
+        {
+            nonRecursive[i].Right.Add(left);
+        }
+        for (var i = 0; i < recursiveList.Count; i++)
+        {
+            recursiveList[i].Right.RemoveAt(0);
+            recursiveList[i]=new(left,recursiveList[i].Right);
+            recursiveList[i].Right.Add(left);
+        }
+        recursiveList.Add(new(left,new List<Symbol>() { Symbols.EPSILON }));
+        _nt_map[l].Clear();
+        foreach(var p in nonRecursive)
+        {
+            AddProduction(p);
+        }
+        foreach (var p in recursiveList)
+        {
+            AddProduction(p);
+        }
     }
+    private string RecursiveName(Symbol s) => s.Value + "_RC";
+    private bool IsRecursiveProduction(Production p)=> p.Left == p.Right[0];
     private bool IsRecursive(Symbol symbol)
     {
         foreach(var p in _nt_map[symbol])
         {
-            if(p.Right[0]==symbol)
+            if(IsRecursiveProduction(p))
                 return true;
         }
         return false;
