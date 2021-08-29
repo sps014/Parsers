@@ -73,13 +73,28 @@ public class Cfg
     }
     public void EliminateLeftRecursion()
     {
-        throw new NotImplementedException();
         var keys= _nt_map.Keys.ToList();
         foreach (var k in keys)
         {
-            var prods=_nt_map[k];
+           if(IsRecursive(k))
+            {
+                SolveRecursion(k);
+            }
 
         }
+    }
+    private void SolveRecursion(Symbol l)
+    {
+        throw new NotImplementedException();
+    }
+    private bool IsRecursive(Symbol symbol)
+    {
+        foreach(var p in _nt_map[symbol])
+        {
+            if(p.Right[0]==symbol)
+                return true;
+        }
+        return false;
     }
     public void Print()
     {

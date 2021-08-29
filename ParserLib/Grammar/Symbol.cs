@@ -56,3 +56,7 @@ public readonly struct Symbol:IEquatable<Symbol>
         return new(value, SymbolType.Terminal);
     }
 }
+public static class Symbols
+{
+    public static readonly Symbol EPSILON = new Symbol("ε");
+}
