@@ -5,10 +5,9 @@ using ParserLib;
 using ParserLib.Grammar;
 using ParserLib.Grammar.Util;
 
-var grammar = @"
-A -> 'b' '+' C '\'' | 
- \| 'd' ''
+var grammar = 
+    @"A -> 'b' '+' C 
 ";
 
 
-var cfg =CfgBuilder.Build(grammar);
+var cfg =new CfgBuilder().Build(grammar);
