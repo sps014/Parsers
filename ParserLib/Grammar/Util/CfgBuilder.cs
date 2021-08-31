@@ -5,89 +5,65 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ParserLib.Grammar.Util;
-public class CfgBuilder
+public static class CfgBuilder
 {
-    private string[] Grammar;
-    private int pos = 0;
-    public Cfg Build(string grammar)
+    public static Cfg Build(string grammar)
     {
-        pos = 0;
-        Grammar= grammar.Split(" ").Where(x=>!string.IsNullOrWhiteSpace(x)).ToArray();
+        var rules= grammar.Split("\r\n").Where(x=>!string.IsNullOrWhiteSpace(x)).ToArray();
 
         Cfg lang=new Cfg();
-        while (pos<=Grammar.Length)
+        foreach(var l in rules)
         {
-            foreach (var p in ParseRule())
+            foreach (var p in ParseRule(l))
             {
                 lang.AddProduction(p);
             }
         }
         return lang;
     }
-    private List<Production> ParseRule()
+    private static List<Production> ParseRule(string line)
     {
-        var left = ParseLeft();
-        List<Production> result = new List<Production>();
-        while(GetCurrent()!=null)
+        var pts = line.Split(" " ).Where(p=>!string.IsNullOrWhiteSpace(p)).ToArray();
+        var result=new List<Production>();
+        if (pts.Length == 0)
+            throw new Exception($"expected one left non terminal in line: {line}");
+
+        var left = pts[0];
+
+        if (left.StartsWith('\'') && left.EndsWith('\''))
+            throw new Exception($"expected one left non terminal got terminal '{left}' in line {line}: ");
+
+        if (pts.Length<2 || pts[1]!="->")
+            throw new Exception($"expected -> in line : {line}");
+
+        List<Symbol> right = new();
+
+        for (int i = 2; i < pts.Length; i++)
         {
-            result.Add(new Production(left,ParseRight().Right));
+            var p = pts[i];
+            
+            if (p.StartsWith('\'') && p.EndsWith('\''))
+            {
+                right.Add(Symbol.Terminal(p.Remove(p.Length - 1).Remove(0, 1)));
+            }
+            else if(p!="|")
+            {
+                right.Add(Symbol.NonTerminal(p));
+            }
+
+            if (p == "|" || i == pts.Length - 1)
+            {
+                if (right.Count == 0)
+                    continue;
+                result.Add(new Production(left, new List<Symbol>(right)));
+                right.Clear();
+            }
+            
+
         }
+
         return result;
     }
-    private Symbol ParseLeft()
-    {
-        var l = GetNext();
-        if (l == null)
-            throw new Exception("Reached end without finding a valid Left hand side symbol of Grammar");
-        if((l.StartsWith('\'') && l.EndsWith('\'')) || !char.IsLetter(l[0]))
-            throw new Exception($"Expected a non terminal (starting with Alphabet) but found {l}");
-
-        //consume -> symbol 
-        var arrow = GetNext();
-        if(arrow==null || arrow!="->")
-            throw new Exception("Reached end without finding a valid arrow in grammar '->'");
-        
-        return Symbol.NonTerminal(l);
-    }
-    private Production ParseRight()
-    {
-        List<Symbol> result = new List<Symbol>();
-        while (GetCurrent()!=null)
-        {
-            if (GetCurrent() == "\r\n" || GetCurrent() == "|")
-            {
-                GetNext();
-                break;
-            }
-            var l=GetNext();
-            if ((l.StartsWith('\'') && l.EndsWith('\'')))
-            {
-                result.Add(Symbol.Terminal(l.Remove(l.Length - 1).Remove(0,1)));
-            }
-            else
-                result.Add(Symbol.NonTerminal(l));
-
-        }
-        if(result.Count == 0)
-            throw new Exception($"Expected terminals and non terminal found nothing but found");
-
-        return new Production(string.Empty,result);
-    }
-    private string GetCurrent()
-    {
-        if (pos  < Grammar.Length)
-        {
-            return Grammar[pos];
-        }
-        return null;
-    }
-    private string GetNext()
-    {
-        if(pos+1<Grammar.Length)
-        {
-            return Grammar[pos++];
-        }
-        return null;
-    }
+    
 }
 

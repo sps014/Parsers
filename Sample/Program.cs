@@ -6,8 +6,9 @@ using ParserLib.Grammar;
 using ParserLib.Grammar.Util;
 
 var grammar = 
-    @"A -> 'b' '+' C 
+    @"A -> 'b' '+' C | 'c'
+ B -> 'a' '+' M
 ";
 
 
-var cfg =new CfgBuilder().Build(grammar);
+var cfg =CfgBuilder.Build(grammar);
