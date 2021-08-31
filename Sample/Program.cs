@@ -12,3 +12,5 @@ var grammar =
 
 
 var cfg =CfgBuilder.Build(grammar);
+cfg.Print();
+cfg.Start.Print();

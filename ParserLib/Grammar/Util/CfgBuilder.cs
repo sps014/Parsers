@@ -12,10 +12,17 @@ public static class CfgBuilder
         var rules= grammar.Split("\r\n").Where(x=>!string.IsNullOrWhiteSpace(x)).ToArray();
 
         Cfg lang=new Cfg();
+        bool gotFirst = false;
         foreach(var l in rules)
         {
             foreach (var p in ParseRule(l))
             {
+                if (!gotFirst)
+                {
+                    lang.Start = p.Left;
+                    gotFirst = true;
+                }
+
                 lang.AddProduction(p);
             }
         }
@@ -45,6 +52,10 @@ public static class CfgBuilder
             if (p.StartsWith('\'') && p.EndsWith('\''))
             {
                 right.Add(Symbol.Terminal(p.Remove(p.Length - 1).Remove(0, 1)));
+            }
+            else if(p=="eps")
+            {
+                right.Add(Symbols.EPSILON);
             }
             else if(p!="|")
             {
