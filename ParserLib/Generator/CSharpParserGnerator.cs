@@ -7,15 +7,13 @@ using ParserLib.Grammar;
 
 namespace ParserLib.Generator;
 
-public class CSharpParserGnerator : IParserGenerator
+public class CSharpParserGnerator : ParserGenerator
 {
-    public Cfg Grammar { get; }
-    public CSharpParserGnerator(Cfg grammar)
+    public CSharpParserGnerator(Cfg grammar) : base(grammar)
     {
-        Grammar = grammar;
     }
 
-    public string Generate()
+    public override string Generate()
     {
         throw new NotImplementedException();
     }
