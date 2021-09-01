@@ -40,7 +40,14 @@ public readonly struct Production:IEquatable<Production>
     {
         return obj is Production other && Equals(other);
     }
-
+    public static bool operator !=(Production lhs, Production rhs)
+    {
+        return !Equals(lhs, rhs);
+    }
+    public static bool operator ==(Production lhs, Production rhs)
+    {
+        return Equals(lhs, rhs);
+    }
     public override int GetHashCode()
     {
         return HashCode.Combine(Left, Right);

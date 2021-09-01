@@ -4,6 +4,5 @@
     {
         Terminal,
         NonTerminal,
-        Start
     }
 }

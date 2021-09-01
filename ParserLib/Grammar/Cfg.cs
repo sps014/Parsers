@@ -5,7 +5,7 @@ using ParserLib.Grammar.Util;
 
 namespace ParserLib.Grammar;
 
-public class Cfg
+public sealed class Cfg
 {
     public Symbol Start { get; set; }
     private Dictionary<Symbol, HashSet<Production>> _nt_map = new();
@@ -133,5 +133,12 @@ public class Cfg
         foreach (var v in _nt_map.Values)
             sb.Append(string.Join(" | ", v.Select(x => x.ToString())) + "\n");
         return sb.ToString();
+    }
+
+    public HashSet<Symbol> NonTerminals=>_nt_map.Keys.ToHashSet();
+
+    public HashSet<Production> this[Symbol nonTerminal]
+    {
+        get=>_nt_map[nonTerminal];
     }
 }
