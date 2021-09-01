@@ -33,7 +33,15 @@ public readonly struct Production:IEquatable<Production>
 
     public bool Equals(Production other)
     {
-        return Left.Equals(other.Left) && Right.Equals(other.Right);
+        if (!Left.Equals(other.Left)||Right.Count!=other.Right.Count)
+            return false;
+
+        for (int i = 0; i < Right.Count; i++)
+        {
+            if(Right[i]!=other.Right[i])
+                return false;
+        }
+        return true;
     }
 
     public override bool Equals(object? obj)

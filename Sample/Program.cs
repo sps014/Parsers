@@ -8,7 +8,7 @@ using ParserLib.Generator;
 
 var grammar = 
     @"A -> 'b' '+' C '-' Mon | 'c'
- C -> 'a' '+' esp
+ C -> 'a' '+' | eps
 ";
 
 

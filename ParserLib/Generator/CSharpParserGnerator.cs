@@ -32,7 +32,7 @@ public class CSharpParserGnerator : ParserGenerator
 
         int c = 0;
         var epslion = new Production(s, new List<Symbol> { Symbols.EPSILON });
-        var has_eps = Grammar[s].Contains(epslion);
+        var has_eps = Grammar[s].Count(x=>x.Right.Count==1&&x.Right[0]==Symbols.EPSILON)>0;
 
         foreach (var p in Grammar[s])
         {
@@ -41,7 +41,7 @@ public class CSharpParserGnerator : ParserGenerator
             ProcessProduction(p, sb, c == 0);
             c++;
         }
-        HandleEpsilone(has_eps, sb);
+        HandleEpsilon(has_eps, sb);
 
         sb.Append("}\r\n");
 
@@ -50,7 +50,7 @@ public class CSharpParserGnerator : ParserGenerator
     {
         GenerateNestedProduction(p.Right, 0, sb, 1, first);
     }
-    private void HandleEpsilone(bool has_eps,StringBuilder sb)
+    private void HandleEpsilon(bool has_eps,StringBuilder sb)
     {
         if(has_eps)
         {

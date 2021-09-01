@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using ParserLib.Grammar.Util;
@@ -27,7 +28,7 @@ public sealed class Cfg
     public void AddProduction(Production p)
     {
         if (!_nt_map.ContainsKey(p.Left))
-            _nt_map.Add(p.Left, new());
+            _nt_map.Add(p.Left, new(new HashSetComperator()));
         _nt_map[p.Left].Add(p);
     }
 
@@ -140,5 +141,17 @@ public sealed class Cfg
     public HashSet<Production> this[Symbol nonTerminal]
     {
         get=>_nt_map[nonTerminal];
+    }
+}
+class HashSetComperator : IEqualityComparer<Production>
+{
+    public bool Equals(Production x, Production y)
+    {
+        return x.Equals(y);
+    }
+
+    public int GetHashCode([DisallowNull] Production obj)
+    {
+        return obj.GetHashCode();
     }
 }
